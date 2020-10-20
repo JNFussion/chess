@@ -1,3 +1,5 @@
+require 'piece'
+
 class Queen < Piece
 
   @@SYMBOLS = {white: "\u2655", black: "\u265B" }

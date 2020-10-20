@@ -1,3 +1,5 @@
+require 'piece'
+
 class Knight < Piece
 
   @@SYMBOLS = {white: "\u2658", black: "\u265E" }

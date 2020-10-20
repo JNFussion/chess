@@ -1,3 +1,5 @@
+require 'piece'
+
 class Bishop < Piece
 
   @@SYMBOLS = {white: "\u2657", black: "\u265D" }

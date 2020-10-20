@@ -1,3 +1,5 @@
+require 'piece'
+
 class King < Piece
 
   @@SYMBOLS = {white: "\u2654", black: "\u265A" }
