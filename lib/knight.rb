@@ -1,4 +1,4 @@
-require 'piece'
+require_relative 'piece'
 
 class Knight < Piece
 
@@ -7,7 +7,7 @@ class Knight < Piece
 
   def initialize(color, initial_position)
     super(color, initial_position)
-    @SYMBOL = @@SYMBOLS[color]
+    @SYMBOL = @@SYMBOLS[color.to_sym]
   end
 
   def self.MOVEMENT

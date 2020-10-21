@@ -1,4 +1,4 @@
-require 'piece'
+require_relative 'piece'
 
 class Rook < Piece
 
@@ -12,7 +12,7 @@ class Rook < Piece
 
   def initialize(color, initial_position)
     super(color, initial_position)
-    @SYMBOL = @@SYMBOLS[color]
+    @SYMBOL = @@SYMBOLS[color.to_sym]
   end
 
   def self.MOVEMENT

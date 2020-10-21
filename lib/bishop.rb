@@ -1,4 +1,4 @@
-require 'piece'
+require_relative 'piece'
 
 class Bishop < Piece
 
@@ -11,6 +11,6 @@ class Bishop < Piece
 
     def initialize(color, initial_position)
       super(color, initial_position)
-      @SYMBOL = @@SYMBOLS[color]
+      @SYMBOL = @@SYMBOLS[color.to_sym]
     end
 end
