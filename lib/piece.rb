@@ -1,5 +1,5 @@
 class Piece
-  attr_accessor :possible_movement, :position
+  attr_accessor :possible_movement, :position, :initial_position
   attr_reader :SYMBOL
   
   def initialize(color, initial_position)

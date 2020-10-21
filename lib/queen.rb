@@ -15,7 +15,7 @@ class Queen < Piece
   
     def initialize(color, initial_position)
       super(color, initial_position)
-      @SYMBOL = @@SYMBOLS[color]
+      @SYMBOL = @@SYMBOLS[color.to_sym]
     end
 
 end

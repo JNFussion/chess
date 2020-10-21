@@ -12,16 +12,14 @@ class Pawn < Piece
   end
 
   def possible_movement(board)
-    pos_mov = @@MOVEMENT.map do |cor|
-      cor[0] = self.position[0] + cor[0]
-      cor[1] = self.position[1] + cor[1]
-    end
-    #pos_mov.delete_if {|cor| valid_mode?(cor[0] + self.position[0], cor[1] + self.position[1]) }
+    pos_mov = @@MOVEMENT
+    pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1] )}
+    
+    # delete de 2 squre move
+    pos_mov.delete([2,0]) if self.position != self.initial_position
+    pos_mov.delete([-2,0]) if self.position != self.initial_position
+
     @@possible_movement = pos_mov
   end
 
 end
-
-# pawn = Pawn.new(:white, [0,6])
-
-# p pawn.possible_movement(nil)

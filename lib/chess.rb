@@ -21,36 +21,37 @@ class Chess
   end
 
   def draw_board
-    index = 1
-    @board.each_value do |value|
-       if value.piece.nil?
-        print "."
-      else
-        print value.piece.SYMBOL
+    
+    @board.each do |row|
+      row.each do |value| 
+        if value.piece.nil?
+          print "."
+        else
+          print value.piece.SYMBOL
+        end
       end
-      puts if index%8 == 0
-      index += 1
+      puts
     end
 
   end
 
   def initialize_board
-    board  = Hash.new
+
+    board = Array.new(8) {Array.new(8)}
+
+    
+
+    
     letters = ['A', 'B', 'C', 'D', 'E' , 'F', 'G', 'H']
     numbers = (1..8).to_a.reverse
-    row = 8
-    numbers.each do |number|
-      column = 1
-      letters.each do |letter|
-        key = letter + number.to_s
-        board[key] = Square.new([row, column])
-        column += 1
+   
+    numbers.each_with_index do |number, number_index|
+      letters.each_with_index do |letter, letter_index|
+        board[number_index][letter_index] = Square.new(letter + number.to_s)
       end
-      row -= 1
     end
 
-    initialize_pawns('black', letters, board)
-    initialize_pawns('white', letters, board)
+    initialize_pawns(board)
     initialize_rooks(board)
     initialize_knights(board)
     initialize_bishops(board)
@@ -61,45 +62,52 @@ class Chess
   end
 
   def initialize_kings(board)
-    board['E8'].piece = King.new('black', board['E8'].position)
-    board['E1'].piece = King.new('white', board['E1'].position)
+    board[0][4].piece = King.new('black', [0,4])
+    board[7][4].piece = King.new('white', [7,4])
   end
 
   def initialize_queens(board)
-    board['D8'].piece = Queen.new('black', board['D8'].position)
-    board['D1'].piece = Queen.new('white', board['D1'].position)
+    board[0][3].piece = Queen.new('black', [0,3])
+    board[7][3].piece = Queen.new('white', [7,3])
   end
 
   def initialize_bishops(board)
-    board['C8'].piece = Bishop.new('black', board['C8'].position)
-    board['F8'].piece = Bishop.new('black', board['F8'].position)
-    board['C1'].piece = Bishop.new('white', board['C1'].position)
-    board['F1'].piece = Bishop.new('white', board['F1'].position)
+    board[0][2].piece = Bishop.new('black', [0,2])
+    board[0][5].piece = Bishop.new('black', [0,5])
+    board[7][2].piece = Bishop.new('white', [7,2])
+    board[7][5].piece = Bishop.new('white', [7][5])
   end
 
   def initialize_knights(board)
-    board['B8'].piece = Knight.new('black', board['B8'].position)
-    board['G8'].piece = Knight.new('black', board['G8'].position)
-    board['B1'].piece = Knight.new('white', board['B1'].position)
-    board['G1'].piece = Knight.new('white', board['G1'].position)
+    board[0][1].piece = Knight.new('black', [0,1])
+    board[0][6].piece = Knight.new('black', [0,6])
+    board[7][1].piece = Knight.new('white', [7,1])
+    board[7][6].piece = Knight.new('white', [7,6])
   end
 
   def initialize_rooks(board)
-    board['A8'].piece = Rook.new('black', board['A8'].position)
-    board['H8'].piece = Rook.new('black', board['H8'].position)
-    board['A1'].piece = Rook.new('white', board['A1'].position)
-    board['H1'].piece = Rook.new('white',board['H1'].position)
+    board[0][0].piece = Rook.new('black',[0,0])
+    board[0][7].piece = Rook.new('black', [0,7])
+    board[7][0].piece = Rook.new('white', [7,0])
+    board[7][7].piece = Rook.new('white',[7,7])
   end
 
-  def initialize_pawns(color, letters, board)
-    letters.each do |letter|
-      square = color == 'white' ? board[letter + '2'] : board[letter + '7']
-      square.piece = Pawn.new(color, square.position) 
-    end
+  def initialize_pawns(board)
+    8.times { |index| board[1][index].piece = Pawn.new('black', [1, index]) }
+    8.times { |index| board[6][index].piece = Pawn.new('white', [6, index]) }
   end
 
 end
 
 chess = Chess.new
+
+chess.board.each do |row|
+  p row
+  puts
+end
+
 chess.draw_board
-p chess.board
+
+# pawn = Pawn.new(:white, [1,6])
+
+# p pawn.possible_movement(chess.board)
