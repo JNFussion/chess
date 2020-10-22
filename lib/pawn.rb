@@ -6,15 +6,14 @@ class Pawn < Piece
   @@MOVEMENT_WHITE = [[-1,0], [-2, 0], [-1,-1], [-1,1]]
   @@MOVEMENT_BLACK = [[1,0],[2,0],[1,-1],[1,1]]
   
-  def initialize(color, initial_position, board = nil)
+  def initialize(color, initial_position)
     super(color, initial_position)
     @SYMBOL = @@SYMBOLS[color.to_sym]
-    @possible_movement = generate_possible_movement(board)
   end
 
   def generate_possible_movement(board)
-    return possible_movement_white(board) if self.COLOR == 'white'
-    return possible_movement_black(board) if self.COLOR == 'black'
+    @possible_movement = possible_movement_white(board) if self.COLOR == 'white'
+    @possible_movement = possible_movement_black(board) if self.COLOR == 'black'
   end
 
   def possible_movement_white(board)
