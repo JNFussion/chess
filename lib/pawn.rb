@@ -18,7 +18,7 @@ class Pawn < Piece
   end
 
   def possible_movement_white(board)
-    pos_mov = @@MOVEMENT_WHITE
+    pos_mov = Array.new(Pawn.MOVEMENT_WHITE)
 
     # Delete the positions out of the board 
     pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1] )}
@@ -26,18 +26,14 @@ class Pawn < Piece
     pos_mov.delete([-2,0]) if self.position != self.INITIAL_POSITION
     # Delete move forward if there is a piece
     pos_mov.delete([-1, 0]) unless board[self.position[0] - 1][self.position[1]].piece.nil?
-    
     # Delete move diagonal if there aren't black pieces
     pos_mov.delete([-1,-1]) if valid_mode?(self.position[0] - 1, self.position[1] - 1) && (board[self.position[0] - 1][self.position[1] - 1].piece.nil? || board[self.position[0] - 1][self.position[1] - 1].piece.COLOR == 'black')
     pos_mov.delete([-1,1]) if valid_mode?(self.position[0] - 1, self.position[1] + 1) && (board[self.position[0] - 1][self.position[1] + 1].piece.nil? || board[self.position[0] - 1][self.position[1] + 1].piece.COLOR == 'black')
-    p self
-    p pos_mov
     pos_mov
   end
 
   def possible_movement_black(board)
-    pos_mov = @@MOVEMENT_BLACK
-    p self
+    pos_mov = Array.new(Pawn.MOVEMENT_BLACK)
     # Delete the positions out of the board 
     pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0], self.position[1] + coor[1] )}
     # Delete the 2 square initial movement
@@ -48,9 +44,15 @@ class Pawn < Piece
     # Delete move diagonal if there aren't black pieces
     pos_mov.delete([1,-1]) if valid_mode?(self.position[0] + 1, self.position[1] - 1) && (board[self.position[0] + 1][self.position[1] - 1].piece.nil? || board[self.position[0] + 1][self.position[1] - 1].piece.COLOR == 'white')
     pos_mov.delete([1,1]) if valid_mode?(self.position[0] + 1, self.position[1] + 1) && (board[self.position[0] + 1][self.position[1] + 1].piece.nil? || board[self.position[0] + 1][self.position[1] + 1].piece.COLOR == 'white')
-    p pos_mov
     pos_mov
   end
 
+  def self.MOVEMENT_BLACK
+    @@MOVEMENT_BLACK
+  end
+
+  def self.MOVEMENT_WHITE
+    @@MOVEMENT_WHITE
+  end
 
 end
