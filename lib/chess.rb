@@ -54,9 +54,9 @@ class Chess
     initialize_pawns(board)
     initialize_rooks(board)
     initialize_knights(board)
-    # initialize_bishops(board)
-    # initialize_kings(board)
-    # initialize_queens(board)
+    initialize_bishops(board)
+    initialize_kings(board)
+    initialize_queens(board)
     board.each do |row|
       row.each do |square|
         square.piece.generate_possible_movement(board) unless square.piece.nil?
@@ -81,7 +81,7 @@ class Chess
     board[0][2].piece = Bishop.new('black', [0,2])
     board[0][5].piece = Bishop.new('black', [0,5])
     board[7][2].piece = Bishop.new('white', [7,2])
-    board[7][5].piece = Bishop.new('white', [7][5])
+    board[7][5].piece = Bishop.new('white', [7,5])
   end
 
   def initialize_knights(board)

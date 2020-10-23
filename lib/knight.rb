@@ -18,7 +18,7 @@ class Knight < Piece
     pos_mov.delete_if do |coor| 
       board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR == self.COLOR unless board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.nil?
     end
-    pos_mov
+    @possible_movement = pos_mov
   end
 
   def self.MOVEMENT
