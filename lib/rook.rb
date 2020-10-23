@@ -1,7 +1,7 @@
 require_relative 'piece'
 require 'pry'
 class Rook < Piece
-
+  attr_accessor :possible_movement
   @@SYMBOLS = {white: "\u2656", black: "\u265C" }
   @@MOVEMENT = [
     [[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0], [-6, 0], [-7, 0]],

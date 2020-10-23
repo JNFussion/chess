@@ -20,6 +20,12 @@ class Chess
 
   end
 
+  def move_piece(src, dest)
+    src_piece = get_piece_by_notation(src)
+    return unless src_piece.possible_movement?(get_indeces(dest))
+  end
+
+
   def draw_board
     
     @board.each do |row|
@@ -39,9 +45,6 @@ class Chess
 
     board = Array.new(8) {Array.new(8)}
 
-    
-
-    
     letters = ['A', 'B', 'C', 'D', 'E' , 'F', 'G', 'H']
     numbers = (1..8).to_a.reverse
    
@@ -103,20 +106,47 @@ class Chess
     8.times { |index| board[6][index].piece = Pawn.new('white', [6, index]) }
   end
 
+
+  def get_indeces(notation)
+    board.each_with_index do |row, row_index|
+      row.each_with_index do |square, column|
+         return [row_index, column] if square.NOTATION == notation
+      end
+    end
+  end
+
+  def get_piece_by_notation(notation)
+    board.each do |row|
+      row.each do |square|
+         return square.piece if square.NOTATION == notation
+      end
+    end
+  end
+
 end
 
 chess = Chess.new
 
 # chess.board.each do |row|
-#   p row
-#   puts
+#   row.each do |square|
+#     unless square.piece.nil?
+#       p square.piece
+#     end
+#   end
 # end
 
-chess.draw_board
-
-pawn = Pawn.new('white', [1,6])
-
-# p pawn.possible_movement
-#p Pawn.MOVEMENT_WHITE
+# #p chess.get_piece_by_notation('A7').possible_movement
 
 
+# chess.draw_board
+# chess.move_piece('A7', 'A6')
+# puts 'A'
+# # p chess.board
+# # chess.board.each do |row|
+# #   row.each do |square|
+# #     unless square.piece.nil?
+# #       p square.piece
+# #     end
+# #   end
+# # end
+# chess.draw_board

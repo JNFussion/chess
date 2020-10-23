@@ -1,8 +1,8 @@
 class Square
-  attr_accessor :position, :piece
+  attr_accessor :NOTATION, :piece
 
   def initialize(notation, piece = nil)
-    @notation = notation
+    @NOTATION = notation
     @piece = piece
   end
 
