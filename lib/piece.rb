@@ -15,8 +15,10 @@ class Piece
 
   def possible_movement?(dest)
     return false if self.possible_movement.empty?
-    self.possible_movement.any? do |coor|
-      self.position[0] + coor[0] == dest[0] && self.position[1] + coor[1] == dest[1] 
+    self.possible_movement.any? do |row|
+      row.any? do |coor|
+        self.position[0] + coor[0] == dest[0] && self.position[1] + coor[1] == dest[1]
+      end
     end
   end
 
