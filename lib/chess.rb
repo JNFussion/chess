@@ -21,8 +21,21 @@ class Chess
   end
 
   def move_piece(src, dest)
-    src_piece = get_piece_by_notation(src)
-    return unless src_piece.possible_movement?(get_indeces(dest))
+    return unless get_piece_by_notation(src).possible_movement?(get_indeces(dest))
+    src_indeces = get_indeces(src)
+    dest_indeces = get_indeces(dest)
+
+    # if there is a piece in the destination square is set to nil.
+
+    board[dest_indeces[0]][dest_indeces[1]].piece = nil unless board[dest_indeces[0]][dest_indeces[1]].piece.nil?
+
+    # Swap source piece and destination piece. Then update the position of source piece and the possible movement.
+
+    board[src_indeces[0]][src_indeces[1]].piece, board[dest_indeces[0]][dest_indeces[1]].piece = board[dest_indeces[0]][dest_indeces[1]].piece, board[src_indeces[0]][src_indeces[1]].piece
+    board[dest_indeces[0]][dest_indeces[1]].piece.position = dest_indeces
+    board[dest_indeces[0]][dest_indeces[1]].piece.generate_possible_movement(board)
+
+    board[dest_indeces[0]][dest_indeces[1]].piece
   end
 
 
@@ -124,29 +137,3 @@ class Chess
   end
 
 end
-
-chess = Chess.new
-
-# chess.board.each do |row|
-#   row.each do |square|
-#     unless square.piece.nil?
-#       p square.piece
-#     end
-#   end
-# end
-
-# #p chess.get_piece_by_notation('A7').possible_movement
-
-
-# chess.draw_board
-# chess.move_piece('A7', 'A6')
-# puts 'A'
-# # p chess.board
-# # chess.board.each do |row|
-# #   row.each do |square|
-# #     unless square.piece.nil?
-# #       p square.piece
-# #     end
-# #   end
-# # end
-# chess.draw_board
