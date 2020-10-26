@@ -23,20 +23,13 @@ class Rook < Piece
       row.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1])}
       row.empty?
     end
+    
     pos_mov.map! do |row|
         aux = []
         row.each_with_index do |coor, index|
           unless board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.nil?
-            
-            if index.zero?
-              aux = row
-              break
-            end
-
-            aux = row[index..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR != self.COLOR
-            
-            aux = row[index-1..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR == self.COLOR
-              
+            aux = row[index+1..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR != self.COLOR
+            aux = row[index..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR == self.COLOR
             break
           end
         end
@@ -44,7 +37,7 @@ class Rook < Piece
     end
 
     pos_mov.delete_if {|row| row.empty?}
-    @posibble_movement = pos_mov
+    @possible_movement = pos_mov
   end
 
   def self.MOVEMENT
