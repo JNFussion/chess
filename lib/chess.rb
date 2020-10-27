@@ -75,6 +75,3 @@ class Chess
   end
 
 end
-
-chess = Chess.new
-chess.draw_board

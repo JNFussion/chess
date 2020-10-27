@@ -325,4 +325,112 @@ describe 'Piece' do
       end
     end
   end
+
+  describe 'Pawn' do
+    describe '#generate_possible_movement' do
+      context 'White' do
+        context 'D4' do
+          it 'return array: [[-1,0]]' do
+            @chess.board[4][3].piece = Pawn.new('white', [6, 3], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[4][3].piece.position = [4,3]
+            @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[-1,0]])
+          end
+        end
+        context 'A3' do
+          it 'return array: [[-1,0]]' do
+            @chess.board[5][0].piece = Pawn.new('white', [6, 0], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[5][0].piece.position = [5,0]
+            @chess.board[5][0].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[-1,0]])
+          end
+        end
+        context 'A8 (No upgrade)' do
+          it 'return array: []' do
+            @chess.board[0][0].piece = Pawn.new('white', [0, 0], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[0][0].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[0][0].piece.possible_movement).to eql([])
+          end
+        end
+        context 'E8 (No upgrade)' do
+          it 'return array: [[[1, 1]],[[1, -1]]]' do
+            @chess.board[0][4].piece = Pawn.new('white', [0, 4], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[0][4].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[0][4].piece.possible_movement).to eql([])
+          end
+        end
+        context 'H2' do
+          it 'return array: [[-1,0],[-2,0]]' do
+            @chess.board[6][7].piece = Pawn.new('white', [6, 7], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[6][7].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[-1,0],[-2,0]])
+          end
+        end
+        context 'H6' do
+          it 'return: [[-1,-1]]' do
+            @chess.board[2][7].piece = Pawn.new('white',[6,7], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[2][7].piece.position = [2,7]
+            @chess.board[2][7].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[2][7].piece.possible_movement).to eql([[-1,-1]])
+          end
+        end
+        context 'D6' do
+          it 'return: [[-1,-1],[-1,1]]' do
+            @chess.board[2][3].piece = Pawn.new('white', [6,3], Movement::PAWN_MOVEMENT_WHITE)
+            @chess.board[2][3].piece.position = [2,3]
+            @chess.board[2][3].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[2][3].piece.possible_movement).to eql([[-1,-1],[-1,1]])
+          end
+        end
+      end
+      context 'Black' do
+        context 'D4' do
+          it 'return array: [[1,0]]' do
+            @chess.board[4][3].piece = Pawn.new('black', [1, 3], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[4][3].piece.position = [4,3]
+            @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[1,0]])
+          end
+        end
+        context 'A3' do
+          it 'return array: [[1,1]]' do
+            @chess.board[5][0].piece = Pawn.new('black', [1, 0], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[5][0].piece.position = [5,0]
+            @chess.board[5][0].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[1,1]])
+          end
+        end
+        context 'A1 (No upgrade)' do
+          it 'return array: []' do
+            @chess.board[7][0].piece = Pawn.new('black', [7, 0], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[7][0].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[7][0].piece.possible_movement).to eql([])
+          end
+        end
+        context 'C3' do
+          it 'return array: [[1,-1],[1,1]]' do
+            @chess.board[5][2].piece = Pawn.new('black', [1, 2], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[5][2].piece.position = [5,2]
+            @chess.board[5][2].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[5][2].piece.possible_movement).to eql([[1,-1],[1,1]])
+          end
+        end
+        context 'H2' do
+          it 'return array: [[1,0],[2,0],[1,-1],[1,1]]' do
+            @chess.board[6][7].piece = Pawn.new('black', [6, 7], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[6][7].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[1,-1]])
+          end
+        end
+        context 'F7' do
+          it 'return array: [[1,0],[2,0],[1,-1],[1,1]]' do
+            @chess.board[1][5].piece = Pawn.new('black', [1, 5], Movement::PAWN_MOVEMENT_BLACK)
+            @chess.board[1][5].piece.generate_possible_movement(@chess.board)
+            expect(@chess.board[1][5].piece.possible_movement).to eql([[1,0],[2,0]])
+          end
+        end
+      end
+    end
+  end
+  
 end
