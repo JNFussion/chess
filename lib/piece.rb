@@ -1,17 +1,47 @@
+require_relative 'movement'
+
 class Piece
+  include Movement
   attr_accessor :possible_movement, :position
-  attr_reader :SYMBOL, :INITIAL_POSITION, :COLOR
+  attr_reader :SYMBOL, :INITIAL_POSITION, :COLOR, :MOVEMENT
   
-  def initialize(color, initial_position)
+  def initialize(color, initial_position, movement)
     @SYMBOL
     @COLOR = color
     @INITIAL_POSITION = initial_position
     @position = @INITIAL_POSITION
+    @MOVEMENT = movement
   end
 
   def valid_mode?(x, y)
     return x.between?(0, 7) && y.between?(0, 7)
   end
+
+  def generate_possible_movement(board)
+    pos_mov = Array.new()
+    @MOVEMENT.each{|e| pos_mov << e.dup}
+    
+    pos_mov.delete_if do |row| 
+      row.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1])}
+      row.empty?
+    end
+    
+    pos_mov.map! do |row|
+        aux = []
+        row.each_with_index do |coor, index|
+          unless board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.nil?
+            aux = row[index+1..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR != self.COLOR
+            aux = row[index..-1] if board[coor[0] + self.position[0]][coor[1] + self.position[1]].piece.COLOR == self.COLOR
+            break
+          end
+        end
+        row = row - aux
+    end
+
+    pos_mov.delete_if {|row| row.empty?}
+    @possible_movement = pos_mov
+  end
+
 
   def possible_movement?(dest)
     return false if self.possible_movement.empty?

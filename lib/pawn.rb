@@ -3,11 +3,9 @@ require_relative 'piece'
 class Pawn < Piece
 
   @@SYMBOLS = {white: "\u2659", black: "\u265F" }
-  @@MOVEMENT_WHITE = [[-1,0], [-2, 0], [-1,-1], [-1,1]]
-  @@MOVEMENT_BLACK = [[1,0],[2,0],[1,-1],[1,1]]
-  
-  def initialize(color, initial_position)
-    super(color, initial_position)
+
+  def initialize(color, initial_position, movement)
+    super(color, initial_position, movement)
     @SYMBOL = @@SYMBOLS[color.to_sym]
   end
 
@@ -17,7 +15,7 @@ class Pawn < Piece
   end
 
   def possible_movement_white(board)
-    pos_mov = Array.new(Pawn.MOVEMENT_WHITE)
+    pos_mov = Array.new(self.MOVEMENT)
 
     # Delete the positions out of the board 
     pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1] )}
@@ -32,7 +30,7 @@ class Pawn < Piece
   end
 
   def possible_movement_black(board)
-    pos_mov = Array.new(Pawn.MOVEMENT_BLACK)
+    pos_mov = Array.new(self.MOVEMENT)
     # Delete the positions out of the board 
     pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0], self.position[1] + coor[1] )}
     # Delete the 2 square initial movement
@@ -44,14 +42,6 @@ class Pawn < Piece
     pos_mov.delete([1,-1]) if valid_mode?(self.position[0] + 1, self.position[1] - 1) && (board[self.position[0] + 1][self.position[1] - 1].piece.nil? || board[self.position[0] + 1][self.position[1] - 1].piece.COLOR == 'white')
     pos_mov.delete([1,1]) if valid_mode?(self.position[0] + 1, self.position[1] + 1) && (board[self.position[0] + 1][self.position[1] + 1].piece.nil? || board[self.position[0] + 1][self.position[1] + 1].piece.COLOR == 'white')
     pos_mov
-  end
-
-  def self.MOVEMENT_BLACK
-    @@MOVEMENT_BLACK
-  end
-
-  def self.MOVEMENT_WHITE
-    @@MOVEMENT_WHITE
   end
 
 end
