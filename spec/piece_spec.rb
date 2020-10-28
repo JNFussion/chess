@@ -12,28 +12,28 @@ describe 'Piece' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0]], [[1, 0]],[[0, -1], [0, -2], [0, -3]], [[0, 1], [0, 2], [0, 3], [0, 4]]]' do
             @chess.board[4][3].piece = Rook.new('white', [4, 3], Movement::ROOK_MOVEMENT)
             @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[4][3].piece.possible_movement).to eql([[[-1, 0], [-2, 0], [-3, 0]], [[1, 0]], [[0, -1], [0, -2], [0, -3]], [[0, 1], [0, 2], [0, 3], [0, 4]]])
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[-1, 0], [-2, 0], [-3, 0], [1, 0], [0, -1], [0, -2], [0, -3], [0, 1], [0, 2], [0, 3], [0, 4]])
           end
         end
         context 'A3' do
           it 'return array: [[-1, 0], [-2, 0], [-3, 0], [-4, 0]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]]' do
             @chess.board[5][0].piece = Rook.new('white', [5, 0], Movement::ROOK_MOVEMENT)
             @chess.board[5][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[5][0].piece.possible_movement).to eql([[[-1, 0], [-2, 0], [-3, 0], [-4, 0]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]])
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[-1, 0], [-2, 0], [-3, 0], [-4, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]])
           end
         end
         context 'A8' do
           it 'return array: [[[1, 0]], [[0, 1]]]' do
             @chess.board[0][0].piece = Rook.new('white', [0, 0], Movement::ROOK_MOVEMENT)
             @chess.board[0][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[0][0].piece.possible_movement).to eql([[[1, 0]], [[0, 1]]])
+            expect(@chess.board[0][0].piece.possible_movement).to eql([[1, 0], [0, 1]])
           end
         end
         context 'E8' do
           it 'return array: [[[1, 0]], [[0, -1]], [[0, 1]]]' do
             @chess.board[0][4].piece = Rook.new('white', [0, 4], Movement::ROOK_MOVEMENT)
             @chess.board[0][4].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[0][4].piece.possible_movement).to eql([[[1, 0]], [[0, -1]], [[0, 1]]])
+            expect(@chess.board[0][4].piece.possible_movement).to eql([[1, 0], [0, -1], [0, 1]])
           end
         end
         context 'A1' do
@@ -54,7 +54,7 @@ describe 'Piece' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0]]]' do
             @chess.board[6][7].piece = Rook.new('white', [6, 7], Movement::ROOK_MOVEMENT)
             @chess.board[6][7].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[6][7].piece.possible_movement).to eql([[[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0]]])
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0]])
           end
         end
       end
@@ -63,14 +63,14 @@ describe 'Piece' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0]], [[1, 0]],[[0, -1], [0, -2], [0, -3]], [[0, 1], [0, 2], [0, 3], [0, 4]]]' do
             @chess.board[4][3].piece = Rook.new('black', [4, 3], Movement::ROOK_MOVEMENT)
             @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[4][3].piece.possible_movement).to eql([[[-1, 0], [-2, 0]],[[1, 0], [2, 0]],[[0, -1], [0, -2], [0, -3]],[[0, 1], [0, 2], [0, 3], [0, 4]]])
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[-1, 0], [-2, 0], [1, 0], [2, 0], [0, -1], [0, -2], [0, -3], [0, 1], [0, 2], [0, 3], [0, 4]])
           end
         end
         context 'A3' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0]], [[1, 0]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]]' do
             @chess.board[5][0].piece = Rook.new('black', [5, 0], Movement::ROOK_MOVEMENT)
             @chess.board[5][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[5][0].piece.possible_movement).to eql([[[-1, 0], [-2, 0], [-3, 0]], [[1, 0]], [[0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]]])
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[-1, 0], [-2, 0], [-3, 0], [1, 0], [0, 1], [0, 2], [0, 3], [0, 4], [0, 5], [0, 6], [0, 7]])
           end
         end
         context 'A8' do
@@ -91,21 +91,21 @@ describe 'Piece' do
           it 'return array: [[[-1, 0]],[[0, 1]]]' do
             @chess.board[7][0].piece = Rook.new('black', [7, 0], Movement::ROOK_MOVEMENT)
             @chess.board[7][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[7][0].piece.possible_movement).to eql([[[-1, 0]],[[0, 1]]])
+            expect(@chess.board[7][0].piece.possible_movement).to eql([[-1, 0], [0, 1]])
           end
         end
         context 'C1' do
           it 'return array: [[[-1, 0]],[[0, -1]],[[0, 1]]]' do
             @chess.board[7][2].piece = Rook.new('black', [7, 2], Movement::ROOK_MOVEMENT)
             @chess.board[7][2].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[7][2].piece.possible_movement).to eql([[[-1, 0]],[[0, -1]],[[0, 1]]])
+            expect(@chess.board[7][2].piece.possible_movement).to eql([[-1, 0], [0, -1], [0, 1]])
           end
         end
         context 'H2' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0]]]' do
             @chess.board[6][7].piece = Rook.new('black', [6, 7], Movement::ROOK_MOVEMENT)
             @chess.board[6][7].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[6][7].piece.possible_movement).to eql([[[-1, 0], [-2, 0], [-3, 0], [-4, 0]],[[1, 0]],[[0, -1]]])
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[-1, 0], [-2, 0], [-3, 0], [-4, 0], [1, 0], [0, -1]])
           end
         end
       end
@@ -226,28 +226,28 @@ describe 'Piece' do
           it 'return array: [[[1, 1]],[[-1, -1], [-2, -2], [-3, -3]],[[-1, 1], [-2, 2], [-3, 3]],[[1, -1]]]' do
             @chess.board[4][3].piece = Bishop.new('white', [4, 3], Movement::BISHOP_MOVEMENT)
             @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[4][3].piece.possible_movement).to eql([[[1, 1]],[[-1, -1], [-2, -2], [-3, -3]],[[-1, 1], [-2, 2], [-3, 3]],[[1, -1]]])
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[1, 1],[-1, -1], [-2, -2], [-3, -3],[-1, 1], [-2, 2], [-3, 3],[1, -1]])
           end
         end
         context 'A3' do
           it 'return array: [[[-1, 1], [-2, 2], [-3, 3], [-4, 4]]]' do
             @chess.board[5][0].piece = Bishop.new('white', [5, 0], Movement::BISHOP_MOVEMENT)
             @chess.board[5][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[5][0].piece.possible_movement).to eql([[[-1, 1], [-2, 2], [-3, 3], [-4, 4]]])
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[-1, 1], [-2, 2], [-3, 3], [-4, 4]])
           end
         end
         context 'A8' do
           it 'return array: [[[1, 1]]]' do
             @chess.board[0][0].piece = Bishop.new('white', [0, 0], Movement::BISHOP_MOVEMENT)
             @chess.board[0][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[0][0].piece.possible_movement).to eql([[[1, 1]]])
+            expect(@chess.board[0][0].piece.possible_movement).to eql([[1, 1]])
           end
         end
         context 'E8' do
           it 'return array: [[[1, 1]],[[1, -1]]]' do
             @chess.board[0][4].piece = Bishop.new('white', [0, 4], Movement::BISHOP_MOVEMENT)
             @chess.board[0][4].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[0][4].piece.possible_movement).to eql([[[1, 1]],[[1, -1]]])
+            expect(@chess.board[0][4].piece.possible_movement).to eql([[1, 1],[1, -1]])
           end
         end
         context 'A1' do
@@ -268,7 +268,7 @@ describe 'Piece' do
           it 'return array: [[[-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5]]]' do
             @chess.board[6][7].piece = Bishop.new('white', [6, 7], Movement::BISHOP_MOVEMENT)
             @chess.board[6][7].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[6][7].piece.possible_movement).to eql([[[-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5]]])
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[-1, -1], [-2, -2], [-3, -3], [-4, -4], [-5, -5]])
           end
         end
       end
@@ -277,14 +277,14 @@ describe 'Piece' do
           it 'return array: [[[1, 1], [2, 2]],[[-1, -1], [-2, -2]],[[-1, 1], [-2, 2]],[[1, -1], [2, -2]]]' do
             @chess.board[4][3].piece = Bishop.new('black', [4, 3], Movement::BISHOP_MOVEMENT)
             @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[4][3].piece.possible_movement).to eql([[[1, 1], [2, 2]],[[-1, -1], [-2, -2]],[[-1, 1], [-2, 2]],[[1, -1], [2, -2]]])
+            expect(@chess.board[4][3].piece.possible_movement).to eql([[1, 1], [2, 2],[-1, -1], [-2, -2],[-1, 1], [-2, 2],[1, -1], [2, -2]])
           end
         end
         context 'A3' do
           it 'return array: [[[1, 1]],[[-1, 1], [-2, 2], [-3, 3]]]' do
             @chess.board[5][0].piece = Bishop.new('black', [5, 0], Movement::BISHOP_MOVEMENT)
             @chess.board[5][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[5][0].piece.possible_movement).to eql([[[1, 1]],[[-1, 1], [-2, 2], [-3, 3]]])
+            expect(@chess.board[5][0].piece.possible_movement).to eql([[1, 1],[-1, 1], [-2, 2], [-3, 3]])
           end
         end
         context 'A8' do
@@ -305,21 +305,21 @@ describe 'Piece' do
           it 'return array: [[[-1, 1]]]' do
             @chess.board[7][0].piece = Bishop.new('black', [7, 0], Movement::BISHOP_MOVEMENT)
             @chess.board[7][0].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[7][0].piece.possible_movement).to eql([[[-1, 1]]])
+            expect(@chess.board[7][0].piece.possible_movement).to eql([[-1, 1]])
           end
         end
         context 'C1' do
           it 'return array: [[[-1, -1]],[[-1, 1]]]' do
             @chess.board[7][2].piece = Bishop.new('black', [7, 2], Movement::BISHOP_MOVEMENT)
             @chess.board[7][2].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[7][2].piece.possible_movement).to eql([[[-1, -1]],[[-1, 1]]])
+            expect(@chess.board[7][2].piece.possible_movement).to eql([[-1, -1],[-1, 1]])
           end
         end
         context 'H2' do
           it 'return array: [[[-1, 0], [-2, 0], [-3, 0], [-4, 0], [-5, 0]]]' do
             @chess.board[6][7].piece = Bishop.new('black', [6, 7], Movement::BISHOP_MOVEMENT)
             @chess.board[6][7].piece.generate_possible_movement(@chess.board)
-            expect(@chess.board[6][7].piece.possible_movement).to eql([[[-1, -1], [-2, -2], [-3, -3], [-4, -4]],[[1, -1]]])
+            expect(@chess.board[6][7].piece.possible_movement).to eql([[-1, -1], [-2, -2], [-3, -3], [-4, -4],[1, -1]])
           end
         end
       end
@@ -433,4 +433,57 @@ describe 'Piece' do
     end
   end
   
+  describe 'King' do
+    before {@empty_board = Chess.new(false)}
+    describe '#check?' do
+      it 'return false' do
+        @empty_board.board[3][3].piece = King.new('white',[7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[0][0].piece = Rook.new('black', [0,0], Movement::ROOK_MOVEMENT)
+        @empty_board.board[0][0].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('black'))).to eql(false)
+      end
+
+      it 'return true' do
+        @empty_board.board[3][3].piece = King.new('white',[7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[0][0].piece = Bishop.new('black', [0,2], Movement::BISHOP_MOVEMENT)
+        @empty_board.board[0][0].piece.position = [0,0]
+        @empty_board.board[0][0].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('black'))).to eql(true)
+      end
+
+      it 'return true' do
+        @empty_board.board[3][3].piece = King.new('white',[7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[3][0].piece = Rook.new('black', [0,0], Movement::ROOK_MOVEMENT)
+        @empty_board.board[3][0].piece.position = [3,0]
+        @empty_board.board[3][0].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('black'))).to eql(true)
+      end
+
+      it 'return true' do
+        @empty_board.board[3][3].piece = King.new('black',[1,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[4][2].piece = Pawn.new('white', [6,2], Movement::PAWN_MOVEMENT_WHITE)
+        @empty_board.board[4][2].piece.position = [4,2]
+        @empty_board.board[4][2].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('white'))).to eql(true)
+      end
+      it 'return false' do
+        @empty_board.board[3][3].piece = King.new('black',[6,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[4][3].piece = Pawn.new('white', [6,3], Movement::PAWN_MOVEMENT_WHITE)
+        @empty_board.board[4][3].piece.position = [4,3]
+        @empty_board.board[4][3].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+      end
+    end
+  end
+
 end

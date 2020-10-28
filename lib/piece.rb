@@ -39,7 +39,7 @@ class Piece
     end
 
     pos_mov.delete_if {|row| row.empty?}
-    @possible_movement = pos_mov
+    @possible_movement = pos_mov.flatten(1)
   end
 
 

@@ -20,4 +20,12 @@ class King < Piece
     @possible_movement = pos_mov
   end
 
+  def check?(pieces)
+    pieces.any? do |piece|
+      piece.possible_movement.any? do |pos_mov|
+        piece.position[0] + pos_mov[0] == self.position[0] && piece.position[1] + pos_mov[1] == self.position[1]
+      end
+    end
+  end
+
 end

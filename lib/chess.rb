@@ -7,6 +7,7 @@ require_relative 'king'
 require_relative 'queen'
 require_relative 'movement'
 require_relative 'factory'
+require 'pry'
 
 
 class Chess
@@ -58,6 +59,16 @@ class Chess
 
   end
 
+  def get_pieces_by_color(color)
+    pieces = []
+    board.each do |row|
+      row.each do |square|
+        pieces << square.piece if !square.piece.nil? && square.piece.COLOR == color
+      end
+    end
+    pieces
+  end
+
   def get_indeces(notation)
     board.each_with_index do |row, row_index|
       row.each_with_index do |square, column|
@@ -75,3 +86,5 @@ class Chess
   end
 
 end
+  
+
