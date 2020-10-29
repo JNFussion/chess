@@ -484,6 +484,107 @@ describe 'Piece' do
         expect(@empty_board.board[3][3].piece.check?(@empty_board.get_pieces_by_color('white'))).to eql(false)
       end
     end
+    describe '#stalemate?' do
+      it 'return true' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][6].piece = Rook.new('white', [7,7], Movement::ROOK_MOVEMENT)
+        @empty_board.board[2][6].piece.position  = [2,6]
+        @empty_board.board[2][6].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][7].piece = King.new('white', [7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[2][7].piece.position  = [2,7]
+        @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(true)
+      end
+
+      it 'return false' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][7].piece = King.new('white', [7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[2][7].piece.position  = [2,7]
+        @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+      end
+      it 'return false' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][6].piece = Rook.new('white', [7,7], Movement::ROOK_MOVEMENT)
+        @empty_board.board[2][6].piece.position  = [2,6]
+        @empty_board.board[2][6].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][7].piece = Rook.new('white', [7,4], Movement::ROOK_MOVEMENT)
+        @empty_board.board[2][7].piece.position  = [2,7]
+        @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+      end
+
+      it 'return false' do
+        @empty_board.board[3][3].piece = King.new('white',[7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[3][3].piece.position = [3,3]
+        @empty_board.board[3][3].piece.generate_possible_movement(@empty_board.board)
+        @empty_board.board[0][0].piece = Bishop.new('black', [0,2], Movement::BISHOP_MOVEMENT)
+        @empty_board.board[0][0].piece.position = [0,0]
+        @empty_board.board[0][0].piece.generate_possible_movement(@empty_board.board)
+        expect(@empty_board.board[3][3].piece.stalemate?(@empty_board.get_pieces_by_color('black'))).to eql(false)
+      end
+        
+    end
+    describe '#checkmate?' do
+      it 'return true' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][7].piece = King.new('white', [7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[2][7].piece.position  = [2,7]
+        @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[0][4].piece = Rook.new('white', [7,7], Movement::ROOK_MOVEMENT)
+        @empty_board.board[0][4].piece.position  = [0,4]
+        @empty_board.board[0][4].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(true)
+      end
+
+      it 'return false' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[0][4].piece = Rook.new('white', [7,7], Movement::ROOK_MOVEMENT)
+        @empty_board.board[0][4].piece.position  = [0,4]
+        @empty_board.board[0][4].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+
+      end
+
+      it 'return false' do
+        @empty_board.board[0][7].piece  = King.new('black', [0,4], Movement::KING_MOVEMENT)
+        @empty_board.board[0][7].piece.position = [0, 7]
+        @empty_board.board[0][7].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][6].piece = Rook.new('white', [7,7], Movement::ROOK_MOVEMENT)
+        @empty_board.board[2][6].piece.position  = [2,6]
+        @empty_board.board[2][6].piece.generate_possible_movement(@empty_board.board)
+
+        @empty_board.board[2][7].piece = King.new('white', [7,4], Movement::KING_MOVEMENT)
+        @empty_board.board[2][7].piece.position  = [2,7]
+        @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
+
+        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+      end
+    end
   end
 
 end
