@@ -21,13 +21,13 @@ class Chess
   end
 
   def game
-
-
-
-
-
-
-
+    option = nil
+    loop do
+      menu()
+      puts 'Introduce option: '
+      option = gets.chomp
+      break if select(option).nil?
+    end
   end
 
   def menu
@@ -101,7 +101,7 @@ class Chess
 # DONT LET KING MOVE TO X POSITION IF THAT POSITION IS IN CHECK"
   def info
     puts 'Info:'
-    puts '1. To move a piece use the following anotation: "Initial position of piece to move" "Target position", ei: "B8 C6"'
+    puts '1. Use Algebraic notation to move pieces. I.e: "Be5"  (move a bishop to e5)'
     puts '2. Type "DRAW" to propose a draw.'
     puts '2. Type "EXIT" to go back to menu.'
     puts
@@ -195,11 +195,38 @@ class Chess
   end
 
   def correct_input?(input)
-    arr = input.split(' ')
-    return false if arr.size != 2
-    return false if arr[0].size != 2 || arr[1].size != 2
-    return arr[0] == @notation_king && arr[1][0].match?(/[A-H]/) && arr[1][1].match?(/[1-8]/) if @check_status
-    arr[0][0].match?(/[A-H]/) && arr[0][1].match?(/[1-8]/) && arr[1][0].match?(/[A-H]/) && arr[1][1].match?(/[1-8]/)
+    
+  end
+
+  def select(option)
+    return 1 unless correct_option?(option)
+
+
+    if option.downcase == '1' || option.downcase == '1.' || option.downcase == 'play' || option.downcase == 'play game' || option.downcase == '1. play game'
+      play()
+    elsif option.downcase == '2' || option.downcase == '2.' || option.downcase == 'save' || option.downcase == 'save game' || option.downcase == '2. save game'
+      save()
+    elsif option.downcase == '3' || option.downcase == '3.' || option.downcase == 'load' || option.downcase == 'load game' || option.downcase == '3. load game'
+      load()
+    elsif option.downcase == 'exit'
+      return 
+    end
+  end
+
+
+  def correct_option?(option)
+
+    if option.downcase == '1' || option.downcase == '1.' || option.downcase == 'play' || option.downcase == 'play game' || option.downcase == '1. play game'
+      return true
+    elsif option.downcase == '2' || option.downcase == '2.' || option.downcase == 'save' || option.downcase == 'save game' || option.downcase == '2. save game'
+      return true
+    elsif option.downcase == '3' || option.downcase == '3.' || option.downcase == 'load' || option.downcase == 'load game' || option.downcase == '3. load game'
+      return true
+    elsif option.downcase == 'exit'
+      return true
+    end
+
+    false
   end
 
 end

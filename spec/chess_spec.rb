@@ -82,28 +82,7 @@ describe 'Chess' do
   end
 
   describe '#correct_input?' do
-    it 'Input: "asd" return false' do
-      expect(@chess.correct_input?('asd')).to eql(false)
-    end
-    it 'Input: "123456789" return false' do
-      expect(@chess.correct_input?('123456789')).to eql(false)
-    end
-    it 'Input: "as 12" return false' do
-      expect(@chess.correct_input?('asd 123')).to eql(false)
-    end
-    it 'Input: "Z9 G1" return true' do
-      expect(@chess.correct_input?('A2 A1')).to eql(true)
-    end
-    it 'Input: "A2A1" return false' do
-      expect(@chess.correct_input?('A2A1')).to eql(false)
-    end
-    it 'Input: "A2 A1" return true' do
-      expect(@chess.correct_input?('A2 A1')).to eql(true)
-    end
-
-    it 'Input: "A2 C8" return true' do
-      expect(@chess.correct_input?('A2 C8')).to eql(true)
-    end
+    
   end
 
   describe '#get_king' do
@@ -125,5 +104,87 @@ describe 'Chess' do
       expect(empty_chess.get_king('black')).to eql(nil)
     end
     
+  end
+
+  describe '#correct_option?' do
+    it 'option "" return false' do
+      expect(@chess.correct_option?('')).to eql(false)
+    end
+    it 'option: "asd" return false' do
+      expect(@chess.correct_option?('asd')).to eql(false)
+    end
+    it 'option "123" return false' do
+      expect(@chess.correct_option?('123')).to eql(false)
+    end
+    it 'option "asd123" return false' do
+      expect(@chess.correct_option?('asd123')).to eql(false)
+    end
+    it 'option "," return false' do
+      expect(@chess.correct_option?(',')).to eql(false)
+    end
+
+    context 'option 1' do
+      it 'option "1" return true' do
+        expect(@chess.correct_option?('1')).to eql(true)
+      end
+      it 'option "1." return true' do
+        expect(@chess.correct_option?('1.')).to eql(true)
+      end
+      it 'option "play" return true' do
+        expect(@chess.correct_option?('play')).to eql(true)
+      end
+      it 'option "PLAY" return true' do
+        expect(@chess.correct_option?('PLAY')).to eql(true)
+      end
+      it 'option "play game" return true' do
+        expect(@chess.correct_option?('play game')).to eql(true)
+      end
+      it 'option "1. PLAY GAME" return true' do
+        expect(@chess.correct_option?('1. PLAY GAME')).to eql(true)
+      end
+    end
+
+    context 'option 2' do
+      it 'option "2" return true' do
+        expect(@chess.correct_option?('2')).to eql(true)
+      end
+      it 'option "2." return true' do
+        expect(@chess.correct_option?('2.')).to eql(true)
+      end
+      it 'option "save" return true' do
+        expect(@chess.correct_option?('save')).to eql(true)
+      end
+      it 'option "save" return true' do
+        expect(@chess.correct_option?('SAVE')).to eql(true)
+      end
+      it 'option "save game" return true' do
+        expect(@chess.correct_option?('SAVE game')).to eql(true)
+      end
+      it 'option "1. SAVE GAME" return true' do
+        expect(@chess.correct_option?('2. SAVE GAME')).to eql(true)
+      end
+    end
+    context 'option 3' do
+      it 'option "3" return true' do
+        expect(@chess.correct_option?('3')).to eql(true)
+      end
+      it 'option "3." return true' do
+        expect(@chess.correct_option?('3.')).to eql(true)
+      end
+      it 'option "load" return true' do
+        expect(@chess.correct_option?('load')).to eql(true)
+      end
+      it 'option "LOAD" return true' do
+        expect(@chess.correct_option?('LOAD')).to eql(true)
+      end
+      it 'option "load game" return true' do
+        expect(@chess.correct_option?('LOAD game')).to eql(true)
+      end
+      it 'option "1. LOAD GAME" return true' do
+        expect(@chess.correct_option?('3. LOAD GAME')).to eql(true)
+      end
+    end
+
+
   end
 end
