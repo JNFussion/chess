@@ -82,7 +82,64 @@ describe 'Chess' do
   end
 
   describe '#correct_input?' do
-    
+    it 'Input: "" return false' do
+      expect(@chess.correct_input?('')).to eql(false)
+    end
+    it 'Input: "123" return false' do
+      expect(@chess.correct_input?('123')).to eql(false)
+    end
+    it 'Input: "asd" return false' do
+      expect(@chess.correct_input?('asd')).to eql(false)
+    end
+    it 'Input: ",.@" return false' do
+      expect(@chess.correct_input?(',.@')).to eql(false)
+    end
+    it 'Input: "Be5" return true' do
+      expect(@chess.correct_input?('Be5')).to eql(true)
+    end
+    it 'Input: "Nf3" return true' do
+      expect(@chess.correct_input?('Nf3')).to eql(true)
+    end
+    it 'Input: "c5" return true' do
+      expect(@chess.correct_input?('c5')).to eql(true)
+    end
+    it 'Input: "Bxe5" return true' do
+      expect(@chess.correct_input?('Bxe5')).to eql(true)
+    end
+    it 'Input "exd5" return true' do
+      expect(@chess.correct_input?('exd5')).to eql(true)
+    end
+    it 'Input "exd6e.p." return true' do
+      expect(@chess.correct_input?('exd6e.p.')).to eql(true)
+    end
+    it 'Input "O-O" return true' do
+      expect(@chess.correct_input?('O-O')).to eql(true)
+    end
+    it 'Input "O-O-O" return true' do
+      expect(@chess.correct_input?('O-O-O')).to eql(true)
+    end
+    it 'Input "e8=Q" return true' do
+      expect(@chess.correct_input?('e8=Q')).to eql(true)
+    end
+    it 'Input "e8Q" return true' do
+      expect(@chess.correct_input?('e8Q')).to eql(true)
+    end
+    it 'Input "e8=R" return true' do
+      expect(@chess.correct_input?('e8=R')).to eql(true)
+    end
+    it 'Input "Rxd8+" return true' do
+      expect(@chess.correct_input?('Rxd8+')).to eql(true)
+    end
+    it 'Input "R1a3" return true' do
+      expect(@chess.correct_input?('R1a3')).to eql(true)
+    end
+    it 'Input "R1a3" return true' do
+      expect(@chess.correct_input?('R1a3')).to eql(true)
+    end
+    it 'Input "Qh4e1" return true' do
+      expect(@chess.correct_input?('Qh4e1')).to eql(true)
+    end
+
   end
 
   describe '#get_king' do

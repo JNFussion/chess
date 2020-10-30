@@ -24,7 +24,7 @@ module Factory
 
     board = Array.new(8) {Array.new(8)}
 
-    letters = ['A', 'B', 'C', 'D', 'E' , 'F', 'G', 'H']
+    letters = ['a', 'b', 'c', 'd', 'e' , 'f', 'g', 'h']
     numbers = (1..8).to_a.reverse
    
     numbers.each_with_index do |number, number_index|
