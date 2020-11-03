@@ -4,78 +4,79 @@ require 'pry'
 describe 'Chess' do
 
   before {@chess = Chess.new}
+  before {@empty_chess = Chess.new(false)}
 
   describe '#move' do
-    context 'A8 Rook on inital board' do
-      it 'A8 to A6 return nil' do
-        expect(@chess.move_piece('A8', 'A6')).to eql(nil)
+    context 'a8 Rook on inital board' do
+      it 'a8 to a6 return nil' do
+        expect(@chess.move_piece('a8', 'a6')).to eql(nil)
       end
-      it 'A8 to B8 return nil' do
-        expect(@chess.move_piece('A8', 'B8')).to eql(nil)
+      it 'a8 to b8 return nil' do
+        expect(@chess.move_piece('a8', 'b8')).to eql(nil)
       end
-      it 'A8 to G6 return nil' do
-        expect(@chess.move_piece('A8', 'G8')).to eql(nil)
+      it 'a8 to g6 return nil' do
+        expect(@chess.move_piece('a8', 'g6')).to eql(nil)
       end
-      it 'A8 to G4 return nil' do
-        expect(@chess.move_piece('A8', 'G4')).to eql(nil)
+      it 'a8 to g4 return nil' do
+        expect(@chess.move_piece('a8', 'g4')).to eql(nil)
       end
     end
-    context 'D4 Rook initial board' do
+    context 'd4 Rook initial board' do
       
-      it 'White rook: D4 to D2 return nil' do
+      it 'White rook: d4 to d2 return nil' do
         @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
         @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        expect(@chess.move_piece('D4', 'D2')).to eql(nil)
+        expect(@chess.move_piece('d4', 'd2')).to eql(nil)
       end
 
-      it 'White rook: D4 to D7 return Rook' do
+      it 'White rook: d4 to d7 return Rook' do
         @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
         @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        expect(@chess.move_piece('D4', 'D7')).to eql(@chess.board[1][3].piece)
-        
-      end
-      
-      it 'White rook: D4 to B4 return Rook' do
-        @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
-        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        
-        expect(@chess.move_piece('D4', 'B4')).to eql(@chess.board[4][1].piece)
-        
-      end
-
-      it 'White rook: D4 to H4 return Rook' do
-        @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
-        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        expect(@chess.move_piece('D4', 'H4')).to eql(@chess.board[4][7].piece)
-        
-      end
-
-      it 'Black rook: D4 to D2 return nil' do
-        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
-        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        expect(@chess.move_piece('D4', 'D2')).to eql(@chess.board[6][3].piece)
-      end
-
-      it 'Black rook: D4 to D7 return Rook' do
-        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
-        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
-        expect(@chess.move_piece('D4', 'D7')).to eql(nil)
+        expect(@chess.move_piece('d4', 'd7')).to eql(@chess.board[1][3].piece)
         
       end
       
-      it 'Black rook: D4 to B4 return Rook' do
-        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
+      it 'White rook: d4 to b4 return Rook' do
+        @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
         @chess.board[4][3].piece.generate_possible_movement(@chess.board)
         
-        expect(@chess.move_piece('D4', 'B4')).to eql(@chess.board[4][1].piece)
+        expect(@chess.move_piece('d4', 'b4')).to eql(@chess.board[4][1].piece)
         
       end
 
-      it 'Black rook: D4 to H4 return Rook' do
+      it 'White rook: d4 to h4 return Rook' do
+        @chess.board[4][3].piece  = Rook.new('white',[4,3], Movement::ROOK_MOVEMENT)
+        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+        expect(@chess.move_piece('d4', 'h4')).to eql(@chess.board[4][7].piece)
+        
+      end
+
+      it 'Black rook: d4 to d2 return nil' do
+        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
+        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+        expect(@chess.move_piece('d4', 'd2')).to eql(@chess.board[6][3].piece)
+      end
+
+      it 'Black rook: d4 to d7 return Rook' do
+        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
+        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+        expect(@chess.move_piece('d4', 'd7')).to eql(nil)
+        
+      end
+      
+      it 'Black rook: d4 to b4 return Rook' do
         @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
         @chess.board[4][3].piece.generate_possible_movement(@chess.board)
         
-        expect(@chess.move_piece('D4', 'H4')).to eql(@chess.board[4][7].piece)
+        expect(@chess.move_piece('d4', 'b4')).to eql(@chess.board[4][1].piece)
+        
+      end
+
+      it 'Black rook: d4 to H4 return Rook' do
+        @chess.board[4][3].piece  = Rook.new('black',[4,3], Movement::ROOK_MOVEMENT)
+        @chess.board[4][3].piece.generate_possible_movement(@chess.board)
+        
+        expect(@chess.move_piece('d4', 'h4')).to eql(@chess.board[4][7].piece)
         
       end
     end
@@ -158,7 +159,7 @@ describe 'Chess' do
 
     it 'There is no white king' do
       empty_chess = Chess.new(false)
-      expect(empty_chess.get_king('black')).to eql(nil)
+      expect(@empty_chess.get_king('black')).to eql(nil)
     end
     
   end
@@ -243,5 +244,57 @@ describe 'Chess' do
     end
 
 
+  end
+
+  describe '#get_piece_by_notation' do
+    it 'a8: return rook' do
+      expect(@chess.get_piece_by_notation('a8')).to eql(@chess.board[0][0].piece)
+    end
+    it 'e8: return king' do
+      expect(@chess.get_piece_by_notation('e8')).to eql(@chess.board[0][4].piece)
+    end
+    it 'c2: return pawn' do
+      expect(@chess.get_piece_by_notation('c2')).to eql(@chess.board[6][2].piece)
+    end
+    it 'd4: return nil' do
+      expect(@chess.get_piece_by_notation('d4')).to eql(@chess.board[4][3].piece)
+    end
+  end
+
+  describe '#move' do
+    
+    it 'Be5' do
+      @empty_chess.board[1][6].piece = Bishop.new('black',[0,5],Movement::BISHOP_MOVEMENT)
+      @empty_chess.board[1][6].piece.position = [1, 6]
+      @empty_chess.board[1][6].piece.generate_possible_movement(@empty_chess.board)
+      expect(@empty_chess.move('Be5', 'black')).to eql(@empty_chess.board[3][4])
+    end
+
+    it 'c5' do
+      expect(@chess.move('c5', 'blakc')).to eql(@chess.board[3][2])
+    end
+    it 'Bxe5' do
+      @empty_chess.board[1][6].piece = Bishop.new('black',[0,5],Movement::BISHOP_MOVEMENT)
+      @empty_chess.board[1][6].piece.position = [1, 6]
+      @empty_chess.board[1][6].piece.generate_possible_movement(@empty_chess.board)
+      @empty_chess.board[3][4].piece = Pawn.new('white',[6,4], Movement::PAWN_MOVEMENT_WHITE)
+      @empty_chess.board[3][4].position = [3,4]
+      @empty_chess.board[3][4].generate_possible_movement(@empty_chess.board)
+      expect(@empty_chess.move('Bxe5', 'black')).to eql(@empty_chess.board[3][4])
+    end
+    it 'exd5' do
+    end
+    it 'exd6e.p' do
+    end
+    it 'Bdb8' do
+    end
+    it 'R1a3' do
+    end
+    it 'Qh4e1'do
+      
+    end
+    it 'Qh4xe1' do
+      
+    end
   end
 end

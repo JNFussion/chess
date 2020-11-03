@@ -111,43 +111,73 @@ class Chess
     gets
   end
 
-  def placeholder(input, color)
+  def move(input, color)
+    aux = input
+    first_letter = aux.slice!(0) unless aux.length == 2
+    
     piece_to_move = nil
-    if input.lenght == 2
-      piece_to_move = find_in(get_pawns(color), get_indices(input))
-    elsif input.lenght == 3
-      piece_to_move = find_in(select_pieces(input[0],color), get_indices(input[1,2]))
-    elsif input.lenght == 4
-      if input[0].match?(/[BRQNK]/) && input[1] == 'x'
-      
-      else
+    arr_pieces = nil
+    dest = nil
 
+    if aux.include?('x')
+      aux = aux.split('x')
+      if aux.size == 1
+        if first_letter.match?(/[RNBQK]/)
+          arr_pieces = select_by_name(first_letter, color)
+        else
+          arr_pieces = get_column(first_letter,color)
+        end
+        dest = aux[0]
+      elsif aux.size == 2
+        if aux[0].match?(/[a-h][1-8]/)
+          piece_to_move = get_piece_by_notation(arr[0])
+        elsif aux[0].match?(/[a-h]/)
+          arr_pieces = get_column(arr[0],color)
+        elsif aux[0].match?(/[1-8]/)
+          arr_pieces = get_row(aux[0],color)
+        end
+        dest = arr[1]
+      end
+    else
+      if first_letter.match?(/[RNBQK]/)
+        if aux.length == 2
+          arr_pieces = select_by_name(first_letter,color)
+        elsif aux.length == 3
+          arr_pieces = aux.match?(/[a-h]/) ? get_column(aux,color) : get_row(aux,color)
+        elsif aux.length == 4
+          piece_to_move = get_piece_by_notation(aux)
+        end
+        dest = aux[-2..-1]
+      else
       end
     end
+
+    piece_to_move = find_in(arr_pieces, dest)
+    move_piece(square_src.notation, dest)
   end
 
-  # def move_piece?(src, dest)
-  #   get_piece_by_notation(src).possible_movement?(get_indeces(dest))
-  # end
+  def move_piece?(src, dest)
+    get_piece_by_notation(src).possible_movement?(get_indices(dest))
+  end
 
-  # def move_piece(src, dest)
-  #   return unless move_piece?(src, dest)
+  def move_piece(src, dest)
+    return unless move_piece?(src, dest)
 
-  #   src_indeces = get_indeces(src)
-  #   dest_indeces = get_indeces(dest)
+    src_indices = get_indices(src)
+    dest_indices = get_indices(dest)
 
-  #   # if there is a piece in the destination square is set to nil.
+    # if there is a piece in the destination square is set to nil.
 
-  #   board[dest_indeces[0]][dest_indeces[1]].piece = nil unless board[dest_indeces[0]][dest_indeces[1]].piece.nil?
+    board[dest_indices[0]][dest_indices[1]].piece = nil unless board[dest_indices[0]][dest_indices[1]].piece.nil?
 
-  #   # Swap source piece and destination piece. Then update the position of source piece and the possible movement.
+    # Swap source piece and destination piece. Then update the position of source piece and the possible movement.
 
-  #   board[src_indeces[0]][src_indeces[1]].piece, board[dest_indeces[0]][dest_indeces[1]].piece = board[dest_indeces[0]][dest_indeces[1]].piece, board[src_indeces[0]][src_indeces[1]].piece
-  #   board[dest_indeces[0]][dest_indeces[1]].piece.position = dest_indeces
-  #   board[dest_indeces[0]][dest_indeces[1]].piece.generate_possible_movement(board)
+    board[src_indices[0]][src_indices[1]].piece, board[dest_indices[0]][dest_indices[1]].piece = board[dest_indices[0]][dest_indices[1]].piece, board[src_indices[0]][src_indices[1]].piece
+    board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+    board[dest_indices[0]][dest_indices[1]].piece.generate_possible_movement(board)
 
-  #   board[dest_indeces[0]][dest_indeces[1]].piece
-  # end
+    board[dest_indices[0]][dest_indices[1]].piece
+  end
 
 
   def draw_board
@@ -166,7 +196,7 @@ class Chess
   end
 
 
-  def select_pieces(letter,color)
+  def select_by_name(letter,color)
     
     if letter == 'R'
       return get_rooks(color)
@@ -261,13 +291,17 @@ class Chess
     end
   end
 
-  def get_collumn(letter, color)
+  def get_column(letter, color)
     pieces = []
     col_index = ['a', 'b', 'c', 'd', 'e' , 'f', 'g', 'h'].index(letter)
     board.each_with_index do |row, row_index|
       pieces << row[row_index][col_index] if !row[row_index][col_index].piece.nil? || row[row_index][col_index].piece.COLOR == color
     end
     pieces
+  end
+
+  def get_row(number, color)
+
   end
 
 
