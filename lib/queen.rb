@@ -9,4 +9,8 @@ class Queen < Piece
       @SYMBOL = @@SYMBOLS[color.to_sym]
     end
 
+    def self.SYMBOLS
+      @@SYMBOLS
+    end
+
 end

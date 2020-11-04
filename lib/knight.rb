@@ -21,4 +21,8 @@ class Knight < Piece
     @possible_movement = pos_mov
   end
 
+  def self.SYMBOLS
+    @@SYMBOLS
+  end
+
 end

@@ -8,5 +8,8 @@ class Bishop < Piece
       super(color, initial_position, movement)
       @SYMBOL = @@SYMBOLS[color.to_sym]
     end
-
+    
+    def self.SYMBOLS
+      @@SYMBOLS
+    end
 end

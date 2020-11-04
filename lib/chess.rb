@@ -121,189 +121,162 @@ class Chess
 
     if aux.include?('x')
       aux = aux.split('x')
+      aux.reject!(&:empty?)
       if aux.size == 1
         if first_letter.match?(/[RNBQK]/)
-          arr_pieces = select_by_name(first_letter, color)
+          arr_pieces = find_by_name(first_letter, color)
         else
           arr_pieces = get_column(first_letter,color)
         end
         dest = aux[0]
       elsif aux.size == 2
         if aux[0].match?(/[a-h][1-8]/)
-          piece_to_move = get_piece_by_notation(arr[0])
+          piece_to_move = get_by_notation(aux[0], color)
+          return unless letter_match_piece?(first_letter, piece_to_move.piece)
         elsif aux[0].match?(/[a-h]/)
-          arr_pieces = get_column(arr[0],color)
+          arr_pieces = get_column(aux[0],color)
         elsif aux[0].match?(/[1-8]/)
           arr_pieces = get_row(aux[0],color)
         end
-        dest = arr[1]
+        dest = aux[1]
       end
     else
-      if first_letter.match?(/[RNBQK]/)
+      if !first_letter.nil? && first_letter.match?(/[RNBQK]/)
         if aux.length == 2
-          arr_pieces = select_by_name(first_letter,color)
+          arr_pieces = find_by_name(first_letter,color)
         elsif aux.length == 3
-          arr_pieces = aux.match?(/[a-h]/) ? get_column(aux,color) : get_row(aux,color)
+          arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
         elsif aux.length == 4
-          piece_to_move = get_piece_by_notation(aux)
+          piece_to_move = get_by_notation(aux[0..1], color)
+          return unless letter_match_piece?(first_letter, piece_to_move.piece)
         end
-        dest = aux[-2..-1]
       else
+        arr_pieces = find_by_name(color)
       end
+      dest = aux[-2..-1]
     end
 
-    piece_to_move = find_in(arr_pieces, dest)
-    move_piece(square_src.notation, dest)
-  end
-
-  def move_piece?(src, dest)
-    get_piece_by_notation(src).possible_movement?(get_indices(dest))
-  end
-
-  def move_piece(src, dest)
-    return unless move_piece?(src, dest)
-
-    src_indices = get_indices(src)
-    dest_indices = get_indices(dest)
-
-    # if there is a piece in the destination square is set to nil.
-
-    board[dest_indices[0]][dest_indices[1]].piece = nil unless board[dest_indices[0]][dest_indices[1]].piece.nil?
-
-    # Swap source piece and destination piece. Then update the position of source piece and the possible movement.
-
-    board[src_indices[0]][src_indices[1]].piece, board[dest_indices[0]][dest_indices[1]].piece = board[dest_indices[0]][dest_indices[1]].piece, board[src_indices[0]][src_indices[1]].piece
-    board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
-    board[dest_indices[0]][dest_indices[1]].piece.generate_possible_movement(board)
-
-    board[dest_indices[0]][dest_indices[1]].piece
-  end
-
-
-  def draw_board
+    unless arr_pieces.nil?
+    arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
+    arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
+    return if arr_pieces.size != 1
+    piece_to_move = arr_pieces[0]
+    end
     
-    @board.each do |row|
-      row.each do |value| 
-        if value.piece.nil?
-          print "."
-        else
-          print value.piece.SYMBOL
-        end
-      end
-      puts
-    end
-
+    move_piece(piece_to_move.NOTATION, dest)
   end
 
+  # def move_piece?(src, dest)
+  #   get_piece_by_notation(src).possible_movement?(get_indices(dest))
+  # end
 
-  def select_by_name(letter,color)
+  def move_piece(src_notation, dest_notation)
+
+    # Get indices of origin position and destination position
+    src_indices = get_indices(src_notation)
+    dest_indices = get_indices(dest_notation)
+
+    # swap origin piece for destiantion piece
+
+    aux = board[dest_indices[0]][dest_indices[1]].piece
+    board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
+    board[src_indices[0]][src_indices[1]].piece = aux
+    board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+    update_possible_movement_all_pieces()
+
+    # If the movement is a take return the taken piece, else return the moved piece
+
+    aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
+  end
+
+  def update_possible_movement_all_pieces
+    board.each do |row|
+      row.each do |square|
+        square.piece.generate_possible_movement(board) unless square.piece.nil?
+      end
+    end
+  end
+
+  def letter_match_piece?(letter, piece)
     
     if letter == 'R'
-      return get_rooks(color)
+      return piece.instance_of?(Rook)
     elsif letter == 'N'
-      return get_knights(color)
+      return piece.instance_of?(Knight)
     elsif letter == 'B'
-      return get_bishops(color)
+      return piece.instance_of?(Bishop)
     elsif letter == 'Q'
-      return get_queen(color)
+      return piece.instance_of?(Queen)
     elsif letter == 'K'
-      return get_king(color)
+      return piece.instance_of?(King)
+    else
+      return piece.instance_of?(Pawn)
     end
-
   end
 
-  def get_rooks(color)
+  def delete_dif_by_name(arr, letter= '', color)
+    if letter == 'R'
+      return delete_dif(arr, color, Rook.SYMBOLS[color.to_sym])
+    elsif letter == 'N'
+      return delete_dif(arr, color, Knight.SYMBOLS[color.to_sym])
+    elsif letter == 'B'
+      return delete_dif(arr, color, Bishop.SYMBOLS[color.to_sym])
+    elsif letter == 'Q'
+      return delete_dif(arr, color, Queen.SYMBOLS[color.to_sym])
+    elsif letter == 'K'
+      return delete_dif(arr, color, King.SYMBOLS[color.to_sym])
+    else
+      return delete_dif(arr, color, Pawn.SYMBOLS[color.to_sym])
+    end
+  end
+
+  def delete_dif(arr, color, symbol)
+    arr.delete_if { |square| square.piece.SYMBOL != symbol}
+    arr
+  end 
+
+  def find_by_name(letter = '', color)
     
+    if letter == 'R'
+      return find(color, Rook.SYMBOLS[color.to_sym])
+    elsif letter == 'N'
+      return find(color, Knight.SYMBOLS[color.to_sym])
+    elsif letter == 'B'
+      return find(color, Bishop.SYMBOLS[color.to_sym])
+    elsif letter == 'Q'
+      return find(color, Queen.SYMBOLS[color.to_sym])
+    elsif letter == 'K'
+      return find(color, King.SYMBOLS[color.to_sym])
+    else
+      return find(color, Pawn.SYMBOLS[color.to_sym])
+    end
+  end
+
+  def find(color, symbol)
+    array = []
     board.each do |row|
       row.each do |square|
         next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(Rook)
+        array << square if square.piece.COLOR == color && square.piece.SYMBOL == symbol
       end
     end
-
-    nil
-  end
-
-  def get_knights(color)
-    
-    board.each do |row|
-      row.each do |square|
-        next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(Knight)
-      end
-    end
-
-    nil
-  end
-
-  def get_bishops(color)
-    
-    board.each do |row|
-      row.each do |square|
-        next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(Bishop)
-      end
-    end
-
-    nil
-  end
-
-  def get_queen(color)
-    
-    board.each do |row|
-      row.each do |square|
-        next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(Queen)
-      end
-    end
-
-    nil
-  end
-
-  def get_king(color)
-    
-    board.each do |row|
-      row.each do |square|
-        next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(King)
-      end
-    end
-
-    nil
-  end
-
-  def get_pawns(color)
-
-    board.each do |row|
-      row.each do |square|
-        next if square.piece.nil?
-        return square.piece if square.piece.COLOR == color && square.piece.instance_of?(Pawn)
-      end
-    end
-
-    nil
-  end
-
-  def find_in(arr, dest)
-    arr.each do |square|
-      next if square.piece.nil?
-      return square.piece if square.piece.possible_movement?(dest)
-    end
+    array
   end
 
   def get_column(letter, color)
     pieces = []
     col_index = ['a', 'b', 'c', 'd', 'e' , 'f', 'g', 'h'].index(letter)
-    board.each_with_index do |row, row_index|
-      pieces << row[row_index][col_index] if !row[row_index][col_index].piece.nil? || row[row_index][col_index].piece.COLOR == color
+    board.each do |row|
+      next if row[col_index].piece.nil?
+      pieces << row[col_index] if row[col_index].piece.COLOR == color
     end
     pieces
   end
 
   def get_row(number, color)
-
+    row = Array.new(board[8-number.to_i])
+    row.delete_if {|square| square.piece.nil? || square.piece.COLOR != color}
   end
-
 
   def get_pieces_by_color(color)
     pieces = []
@@ -331,10 +304,10 @@ class Chess
     end
   end
 
-  def get_piece_by_notation(notation)
+  def get_by_notation(notation, color)
     board.each do |row|
       row.each do |square|
-         return square.piece if square.NOTATION == notation
+         return square if square.NOTATION == notation && (square.piece.nil? || square.piece.COLOR == color)
       end
     end
   end
@@ -381,6 +354,19 @@ class Chess
     false
   end
 
-end
-  
+  def draw_board
+    
+    @board.each do |row|
+      row.each do |value| 
+        if value.piece.nil?
+          print "."
+        else
+          print value.piece.SYMBOL
+        end
+      end
+      puts
+    end
 
+  end
+
+end

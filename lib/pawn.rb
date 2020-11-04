@@ -43,4 +43,8 @@ class Pawn < Piece
     pos_mov
   end
 
+  def self.SYMBOLS
+    @@SYMBOLS
+  end
+
 end

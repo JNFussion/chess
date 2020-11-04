@@ -32,6 +32,10 @@ class King < Piece
     !danger_in_position?(pieces) && danger_in_all_possible_movement?(pieces)
   end
 
+  def self.SYMBOLS
+    @@SYMBOLS
+  end
+
   private
 
   def danger_in_position?(pieces)
@@ -51,4 +55,5 @@ class King < Piece
       end
     end
   end
+
 end
