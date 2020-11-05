@@ -114,10 +114,13 @@ class Chess
   def move(input, color)
     aux = input
     first_letter = aux.slice!(0) unless aux.length == 2
-    
+
+    letter_upgrade = nil
     piece_to_move = nil
     arr_pieces = nil
     dest = nil
+
+    
 
     if aux.include?('x')
       aux = aux.split('x')
@@ -187,6 +190,26 @@ class Chess
     # If the movement is a take return the taken piece, else return the moved piece
 
     aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
+  end
+
+  def upgrade(notation, letter)
+    indices = get_indices(notation)
+    aux = board[indices[0]][indices[1]].piece
+
+    if letter == 'R'
+      board[indices[0]][indices[1]] = Rook.new(aux.COLOR, aux.INITIAL_POSITION, Movement::ROOK_MOVEMENT)
+    elsif letter == 'N'
+      board[indices[0]][indices[1]] = Knight.new(aux.COLOR, aux.INITIAL_POSITION, Movement::KNIGHT_MOVEMENT)
+    elsif letter == 'B'
+      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION, Movement::BISHOP_MOVEMENT)
+    elsif letter == 'Q'
+      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION, Movement::QUEEN_MOVEMENT)
+    end
+
+    board[indices[0]][indices[1]].piece = indices
+    board[indices[0]][indices[1]].piece.generate_possible_movement(board)
+
+    board[indices[0]][indices[1]].piece
   end
 
   def update_possible_movement_all_pieces
@@ -314,7 +337,7 @@ class Chess
 
   def correct_input?(input)
      
-    if input.match?(/[BRQNK][a-h][1-8]|[BRQNK][a-h]x[a-h][1-8]|[BRQNK][a-h][1-8]x[a-h][1-8]|[BRQNK][a-h][1-8][a-h][1-8]|[BRQNK][a-h][a-h][1-8]|[BRQNK]x[a-h][1-8]|[a-h]x[a-h][1-8]=(B+R+Q+N)|[a-h]x[a-h][1-8]|[a-h][1-8]x[a-h][1-8]=(B+R+Q+N)|[a-h][1-8]x[a-h][1-8]|[a-h][1-8][a-h][1-8]=(B+R+Q+N)|[a-h][1-8][a-h][1-8]|[a-h][1-8]=(B+R+Q+N)|[a-h][1-8]|[BRQNK][1-8]x[a-h][1-8]|[BRQNK][1-8][a-h][1-8]/)
+    if input.match?(/^[BRQNK][a-h][1-8]$|^[BRQNK][a-h][a-h][1-8]$|^[BRQNK][1-8][a-h][1-8]$|^[BRQNK][a-h][1-8][a-h][1-8]$|^[BRQNK][a-h][1-8][+#]$|^[BRQNK][a-h][a-h][1-8][+#]$|^[BRQNK][1-8][a-h][1-8][+#]$|^[BRQNK][a-h][1-8][a-h][1-8][+#]$|^[BRQNK]x[a-h][1-8][+#]$|^[BRQNK][a-h]x[a-h][1-8][+#]$|^[BRQNK][1-8]x[a-h][1-8][+#]$|^[BRQNK][a-h][1-8]x[a-h][1-8][+#]$|^[BRQNK]x[a-h][1-8]$|^[BRQNK][a-h]x[a-h][1-8]$|^[BRQNK][1-8]x[a-h][1-8]$|^[BRQNK][a-h][1-8]x[a-h][1-8]$|^[a-h][1-8]$|^[a-h][18][BRQN]$|^[a-h][18]=[BRQN]$|^[a-h]x[a-h][1-8]$|^[a-h]x[a-h][1-8]e.p.$|^[a-h]x[a-h][18][BRQN]$|^[a-h]x[a-h][18]=[BRQN]$/)
       return true
      elsif input == 'O-O' || input == 'O-O-O'
       return true

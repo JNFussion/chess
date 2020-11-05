@@ -99,11 +99,17 @@ describe 'Chess' do
     it 'Input: "Be5" return true' do
       expect(@chess.correct_input?('Be5')).to eql(true)
     end
+    it 'Input: "asdBe5" return true' do
+      expect(@chess.correct_input?('asdBe5')).to eql(false)
+    end
     it 'Input: "Nf3" return true' do
       expect(@chess.correct_input?('Nf3')).to eql(true)
     end
     it 'Input: "c5" return true' do
       expect(@chess.correct_input?('c5')).to eql(true)
+    end
+    it 'Input: "c5123sad" return true' do
+      expect(@chess.correct_input?('c5123sad')).to eql(false)
     end
     it 'Input: "Bxe5" return true' do
       expect(@chess.correct_input?('Bxe5')).to eql(true)
@@ -131,6 +137,9 @@ describe 'Chess' do
     end
     it 'Input "Rxd8+" return true' do
       expect(@chess.correct_input?('Rxd8+')).to eql(true)
+    end
+    it 'Input "Rxd8#" return true' do
+      expect(@chess.correct_input?('Rxd8#')).to eql(true)
     end
     it 'Input "R1a3" return true' do
       expect(@chess.correct_input?('R1a3')).to eql(true)
@@ -502,7 +511,7 @@ describe 'Chess' do
 
 
     expect(@empty_chess.move('Qh4e1', 'white')).to eql(nil)
-  end
+    end
 
     it 'Qh4xe1' do
       # Black Rook d8
