@@ -112,50 +112,109 @@ class Chess
 
   def move(input, color)
     aux = input
-    first_letter = aux.slice!(0) unless aux.length == 2
 
     letter_upgrade = nil
     piece_to_move = nil
     arr_pieces = nil
     dest = nil
-
     
+    if aux == 'O-O'
+      
+    elsif aux == 'O-O-O'
+    
+    elsif aux.match?(/^[BRQNK][a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      arr_pieces = find_by_name(first_letter,color)
+      dest = aux[-2..-1]
+    elsif aux.match?(/^[BRQNK][a-h][a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
+      dest = aux[-2..-1]
+    elsif aux.match?(/^[BRQNK][1-8][a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
+      dest = aux[-2..-1]
+    elsif aux.match?(/^[BRQNK][a-h][1-8][a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      piece_to_move = get_by_notation(aux[0..1], color)
+      return unless letter_match_piece?(first_letter, piece_to_move.piece)
+      dest = aux[-2..-1]
+    elsif aux.match?(/^[BRQNK][a-h][1-8][+#]$/)
 
-    if aux.include?('x')
+    elsif aux.match?(/^[BRQNK][a-h][a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK][1-8][a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK][a-h][1-8][a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK]x[a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK][a-h]x[a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK][1-8]x[a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK][a-h][1-8]x[a-h][1-8][+#]$/)
+
+    elsif aux.match?(/^[BRQNK]x[a-h][1-8]$/)
+      first_letter = aux.slice!(0)
       aux = aux.split('x')
       aux.reject!(&:empty?)
-      if aux.size == 1
-        if first_letter.match?(/[RNBQK]/)
-          arr_pieces = find_by_name(first_letter, color)
-        else
-          arr_pieces = get_column(first_letter,color)
-        end
-        dest = aux[0]
-      elsif aux.size == 2
-        if aux[0].match?(/[a-h][1-8]/)
-          piece_to_move = get_by_notation(aux[0], color)
-          return unless letter_match_piece?(first_letter, piece_to_move.piece)
-        elsif aux[0].match?(/[a-h]/)
-          arr_pieces = get_column(aux[0],color)
-        elsif aux[0].match?(/[1-8]/)
-          arr_pieces = get_row(aux[0],color)
-        end
-        dest = aux[1]
-      end
-    else
-      if !first_letter.nil? && first_letter.match?(/[RNBQK]/)
-        if aux.length == 2
-          arr_pieces = find_by_name(first_letter,color)
-        elsif aux.length == 3
-          arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
-        elsif aux.length == 4
-          piece_to_move = get_by_notation(aux[0..1], color)
-          return unless letter_match_piece?(first_letter, piece_to_move.piece)
-        end
-      else
-        arr_pieces = find_by_name(color)
-      end
+      arr_pieces = find_by_name(first_letter, color)
+      dest = aux[0]
+    elsif aux.match?(/^[BRQNK][a-h]x[a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(aux[0],color)
+      dest = aux[1]
+    elsif aux.match?(/^[BRQNK][1-8]x[a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_row(aux[0],color)
+      dest = aux[1]
+    elsif aux.match?(/^[BRQNK][a-h][1-8]x[a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      piece_to_move = get_by_notation(aux[0], color)
+      return unless letter_match_piece?(first_letter, piece_to_move.piece)
+      dest = aux[1]
+    elsif aux.match?(/^[a-h][1-8]$/)
+      arr_pieces = find_by_name(color)
       dest = aux[-2..-1]
+    elsif aux.match?(/^[a-h][18][BRQN]$/)
+      letter_upgrade = aux.slice!(-1)
+      arr_pieces = find_by_name(color)
+      dest = aux
+    elsif aux.match?(/^[a-h][18]=[BRQN]$/)
+      letter_upgrade = aux.slice!(-1)
+      aux = aux.split('=')
+      aux.reject!(&:empty?)
+      arr_pieces = find_by_name(color)
+      dest = aux[0]
+    elsif aux.match?(/^[a-h]x[a-h][1-8]$/)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(first_letter,color)
+      dest = aux[0]
+    elsif aux.match?(/^[a-h]x[a-h][1-8]e.p.$/)
+
+    elsif aux.match?(/^[a-h]x[a-h][18][QRNB]$/)
+      first_letter = aux.slice!(0)
+      letter_upgrade = aux.slice!(-1)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(first_letter,color)
+      dest = aux[0]
+    elsif aux.match?(/^[a-h]x[a-h][18]=[BRQN]$/)
+      first_letter = aux.slice!(0)
+      letter_upgrade = aux.slice!(-1)
+      aux = aux.split(/x|=/)
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(first_letter,color)
+      dest = aux[0]
     end
 
     unless arr_pieces.nil?
@@ -164,9 +223,71 @@ class Chess
     return if arr_pieces.size != 1
     piece_to_move = arr_pieces[0]
     end
-    
-    move_piece(piece_to_move.NOTATION, dest)
+    unless letter_upgrade.nil?
+      move_piece(piece_to_move.NOTATION, dest)
+      upgrade(dest, letter_upgrade)
+    else
+      move_piece(piece_to_move.NOTATION, dest)
+    end
   end
+
+  # def move(input, color)
+  #   aux = input
+  #   first_letter = aux.slice!(0) unless aux.length == 2
+
+  #   letter_upgrade = nil
+  #   piece_to_move = nil
+  #   arr_pieces = nil
+  #   dest = nil
+
+    
+
+  #   if aux.include?('x')
+  #     aux = aux.split('x')
+  #     aux.reject!(&:empty?)
+  #     if aux.size == 1
+  #       if first_letter.match?(/[RNBQK]/)
+  #         arr_pieces = find_by_name(first_letter, color)
+  #       else
+  #         arr_pieces = get_column(first_letter,color)
+  #       end
+  #       dest = aux[0]
+  #     elsif aux.size == 2
+  #       if aux[0].match?(/[a-h][1-8]/)
+  #         piece_to_move = get_by_notation(aux[0], color)
+  #         return unless letter_match_piece?(first_letter, piece_to_move.piece)
+  #       elsif aux[0].match?(/[a-h]/)
+  #         arr_pieces = get_column(aux[0],color)
+  #       elsif aux[0].match?(/[1-8]/)
+  #         arr_pieces = get_row(aux[0],color)
+  #       end
+  #       dest = aux[1]
+  #     end
+  #   else
+  #     if !first_letter.nil? && first_letter.match?(/[RNBQK]/)
+  #       if aux.length == 2
+  #         arr_pieces = find_by_name(first_letter,color)
+  #       elsif aux.length == 3
+  #         arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
+  #       elsif aux.length == 4
+  #         piece_to_move = get_by_notation(aux[0..1], color)
+  #         return unless letter_match_piece?(first_letter, piece_to_move.piece)
+  #       end
+  #     else
+  #       arr_pieces = find_by_name(color)
+  #     end
+  #     dest = aux[-2..-1]
+  #   end
+
+  #   unless arr_pieces.nil?
+  #   arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
+  #   arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
+  #   return if arr_pieces.size != 1
+  #   piece_to_move = arr_pieces[0]
+  #   end
+    
+  #   move_piece(piece_to_move.NOTATION, dest)
+  # end
 
 
 
@@ -187,27 +308,24 @@ class Chess
     board[src_indices[0]][src_indices[1]].piece = aux
     board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
     update_possible_movement_all_pieces()
-
     # If the movement is a take return the taken piece, else return the moved piece
-
     aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
   end
 
   def upgrade(notation, letter)
     indices = get_indices(notation)
     aux = board[indices[0]][indices[1]].piece
-
     if letter == 'R'
-      board[indices[0]][indices[1]] = Rook.new(aux.COLOR, aux.INITIAL_POSITION)
+      board[indices[0]][indices[1]].piece = Rook.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'N'
-      board[indices[0]][indices[1]] = Knight.new(aux.COLOR, aux.INITIAL_POSITION)
+      board[indices[0]][indices[1]].piece = Knight.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'B'
-      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION)
+      board[indices[0]][indices[1]].piece = Bishop.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'Q'
-      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION)
+      board[indices[0]][indices[1]].piece = Queen.new(aux.COLOR, aux.INITIAL_POSITION)
     end
 
-    board[indices[0]][indices[1]].piece = indices
+    board[indices[0]][indices[1]].piece.position = indices
     board[indices[0]][indices[1]].piece.generate_possible_movement(board)
 
     board[indices[0]][indices[1]].piece

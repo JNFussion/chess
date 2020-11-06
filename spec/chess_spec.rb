@@ -621,12 +621,12 @@ describe 'Chess' do
     it 'dxe8Q' do
       @empty_chess.board[1][3].piece = Pawn.new('white', [6,3])
       @empty_chess.board[1][3].piece.position = [1, 3]
-      @empty_chess.board[1][3].piece.generate_possible_movement(@empty_chess.board)
       @empty_chess.board[0][4].piece = Rook.new('black', [0,7])
       @empty_chess.board[0][4].piece.position = [0, 4]
+      @empty_chess.board[1][3].piece.generate_possible_movement(@empty_chess.board)
       @empty_chess.board[0][4].piece.generate_possible_movement(@empty_chess.board)
 
-      expect(@empty_chess.move('dxe80Q', 'white').class).to eql(Queen)
+      expect(@empty_chess.move('dxe8Q', 'white').class).to eql(Queen)
     end
 
     it 'e8=Q' do
@@ -636,15 +636,15 @@ describe 'Chess' do
       expect(@empty_chess.move('e8=Q', 'white').class).to eql(Queen)
     end
 
-    it 'dxe8Q' do
+    it 'dxe8=Q' do
       @empty_chess.board[1][3].piece = Pawn.new('white', [6,3])
       @empty_chess.board[1][3].piece.position = [1, 3]
-      @empty_chess.board[1][3].piece.generate_possible_movement(@empty_chess.board)
       @empty_chess.board[0][4].piece = Rook.new('black', [0,7])
       @empty_chess.board[0][4].piece.position = [0, 4]
+      @empty_chess.board[1][3].piece.generate_possible_movement(@empty_chess.board)
       @empty_chess.board[0][4].piece.generate_possible_movement(@empty_chess.board)
 
-      expect(@empty_chess.move('dxe80=Q', 'white').class).to eql(Queen)
+      expect(@empty_chess.move('dxe8=Q', 'white').class).to eql(Queen)
     end
 
     it 'White: O-O' do
@@ -652,7 +652,7 @@ describe 'Chess' do
       @empty_chess.board[7][4].piece = King.new('white', [0,4])
       @empty_chess.board[7][7].piece.generate_possible_movement(@empty_chess.board)
       @empty_chess.board[7][4].piece.generate_possible_movement(@empty_chess.board)
-      expect(@empty_chess.move('O-O')).to eql(@empty_chess.board[7][5]])
+      expect(@empty_chess.move('O-O')).to eql(@empty_chess.board[7][5])
     end
 
     it 'Black: O-O-O' do
