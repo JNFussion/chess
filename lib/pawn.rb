@@ -1,11 +1,13 @@
 require_relative 'piece'
 
 class Pawn < Piece
+  include Movement
 
   @@SYMBOLS = {white: "\u2659", black: "\u265F" }
 
-  def initialize(color, initial_position, movement)
-    super(color, initial_position, movement)
+  def initialize(color, initial_position)
+    super(color, initial_position)
+    @MOVEMENT = color == 'white' ? PAWN_MOVEMENT_WHITE : PAWN_MOVEMENT_BLACK
     @SYMBOL = @@SYMBOLS[color.to_sym]
   end
 

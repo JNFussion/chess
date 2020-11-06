@@ -5,9 +5,8 @@ require_relative 'knight'
 require_relative 'bishop'
 require_relative 'king'
 require_relative 'queen'
-require_relative 'movement'
 require_relative 'factory'
-require 'pry'
+
 
 
 class Chess
@@ -169,6 +168,8 @@ class Chess
     move_piece(piece_to_move.NOTATION, dest)
   end
 
+
+
   # def move_piece?(src, dest)
   #   get_piece_by_notation(src).possible_movement?(get_indices(dest))
   # end
@@ -197,13 +198,13 @@ class Chess
     aux = board[indices[0]][indices[1]].piece
 
     if letter == 'R'
-      board[indices[0]][indices[1]] = Rook.new(aux.COLOR, aux.INITIAL_POSITION, Movement::ROOK_MOVEMENT)
+      board[indices[0]][indices[1]] = Rook.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'N'
-      board[indices[0]][indices[1]] = Knight.new(aux.COLOR, aux.INITIAL_POSITION, Movement::KNIGHT_MOVEMENT)
+      board[indices[0]][indices[1]] = Knight.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'B'
-      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION, Movement::BISHOP_MOVEMENT)
+      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION)
     elsif letter == 'Q'
-      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION, Movement::QUEEN_MOVEMENT)
+      board[indices[0]][indices[1]] = Bishop.new(aux.COLOR, aux.INITIAL_POSITION)
     end
 
     board[indices[0]][indices[1]].piece = indices

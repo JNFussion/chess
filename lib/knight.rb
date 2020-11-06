@@ -1,13 +1,15 @@
 require_relative 'piece'
 
 class Knight < Piece
-
+  include Movement
+  
   @@SYMBOLS = {white: "\u2658", black: "\u265E" }
   
 
-  def initialize(color, initial_position, movement)
-    super(color, initial_position, movement)
+  def initialize(color, initial_position)
+    super(color, initial_position)
     @SYMBOL = @@SYMBOLS[color.to_sym]
+    @MOVEMENT = KNIGHT_MOVEMENT
   end
 
   def generate_possible_movement(board)

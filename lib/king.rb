@@ -4,13 +4,14 @@ class King < Piece
 
   @@SYMBOLS = {white: "\u2654", black: "\u265A" }
 
-  def initialize(color, initial_position, movement)
-    super(color, initial_position, movement)
+  def initialize(color, initial_position)
+    super(color, initial_position)
     @SYMBOL = @@SYMBOLS[color.to_sym]
+    @MOVEMENT = KING_MOVEMENT
   end
   
   def generate_possible_movement(board)
-    pos_mov = Array.new(self.MOVEMENT)
+    pos_mov = Array.new(@MOVEMENT)
 
     pos_mov.delete_if {|coor| !valid_mode?(self.position[0] + coor[0],self.position[1] + coor[1])}
       
@@ -55,5 +56,4 @@ class King < Piece
       end
     end
   end
-
 end
