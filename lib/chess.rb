@@ -98,7 +98,7 @@ class Chess
   #     end
   #   end
   # end
-# DONT LET KING MOVE TO X POSITION IF THAT POSITION IS IN CHECK"
+  
   def info
     puts 'Info:'
     puts '1. Use Algebraic notation to move pieces. I.e: "Be5"  (move a bishop to e5)'
