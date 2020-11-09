@@ -302,7 +302,14 @@ describe 'Chess' do
     end
 
     it 'exd6e.p' do
-      expect()
+      @empty_chess.board[1][3].piece = Pawn.new('black', [1,3])
+      @empty_chess.board[3][4].piece = Pawn.new('white', [6,4])
+      @empty_chess.board[3][4].piece.position = [3, 4]
+      @empty_chess.board[1][3].piece.generate_possible_movement(@empty_chess.board)
+      @empty_chess.board[3][4].piece.generate_possible_movement(@empty_chess.board)
+      pawn = @empty_chess.board[1][3].piece
+      @empty_chess.move('d5')
+      expect(@empty_chess.move('exd6e.p')).to eql(pawn)
     end
 
     it 'Bdb8' do

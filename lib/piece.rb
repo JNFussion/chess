@@ -2,9 +2,11 @@ require_relative 'movement'
 
 class Piece
   include Movement
-  attr_accessor :possible_movement, :position
+  attr_accessor :possible_movement, :position, :turns
   attr_reader :SYMBOL, :INITIAL_POSITION, :COLOR, :MOVEMENT
   
+  @@turns = {:black => 1, :white => 1}
+
   def initialize(color, initial_position)
     @SYMBOL
     @COLOR = color
@@ -51,4 +53,16 @@ class Piece
     end
   end
 
+  def self.turns
+    @@turns
+  end
+
+  def turn
+    @@turns[self.COLOR.to_sym]
+  end
+
+  def up_turn
+    @@turns[self.COLOR.to_sym] += 1
+  end
+  
 end

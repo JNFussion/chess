@@ -11,12 +11,9 @@ require_relative 'factory'
 
 class Chess
   include Factory
-  attr_accessor :check_status
   attr_reader :board
   def initialize(full = true)
     @board = self.generate_full_board(full)
-    @check_status = false
-    @notation_king = ''
   end
 
   def game
@@ -109,7 +106,8 @@ class Chess
     puts 'Type to continue...'
     gets
   end
-
+  # Input: the notations of the move
+  # Color: the color of the piece you want to move
   def move(input, color)
     aux = input
 
@@ -200,6 +198,11 @@ class Chess
       arr_pieces = get_column(first_letter,color)
       dest = aux[0]
     elsif aux.match?(/^[a-h]x[a-h][1-8]e.p.$/)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(first_letter,color)
+      dest = aux[0]
 
     elsif aux.match?(/^[a-h]x[a-h][18][QRNB]$/)
       first_letter = aux.slice!(0)
@@ -308,6 +311,7 @@ class Chess
     board[src_indices[0]][src_indices[1]].piece = aux
     board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
     update_possible_movement_all_pieces()
+    board[dest_indices[0]][dest_indices[1]].piece.up_turn()
     # If the movement is a take return the taken piece, else return the moved piece
     aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
   end
@@ -512,3 +516,5 @@ class Chess
   end
 
 end
+
+
