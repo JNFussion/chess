@@ -431,6 +431,16 @@ describe 'Piece' do
         end
       end
     end
+    describe '#en_passant' do
+      it 'exd6e.p.' do
+        @chess.move('e4', 'white')
+        @chess.move('e6', 'black')
+        @chess.move('e5', 'white')
+        @chess.move('d5', 'black')
+        pawn = @chess.board[3][4].piece
+        expect(pawn.en_passant(@chess.board, @chess.turns)).to eql([[-1, -1]])
+      end
+    end
   end
   
   describe 'King' do

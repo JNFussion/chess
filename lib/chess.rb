@@ -11,9 +11,12 @@ require_relative 'factory'
 
 class Chess
   include Factory
+
+  attr_accessor :turns
   attr_reader :board
   def initialize(full = true)
     @board = self.generate_full_board(full)
+    @turns = {:black => 0, :white => 0}
   end
 
   def game
@@ -117,9 +120,9 @@ class Chess
     dest = nil
     
     if aux == 'O-O'
-      
+      return
     elsif aux == 'O-O-O'
-    
+      return
     elsif aux.match?(/^[BRQNK][a-h][1-8]$/)
       first_letter = aux.slice!(0)
       arr_pieces = find_by_name(first_letter,color)
@@ -198,12 +201,22 @@ class Chess
       arr_pieces = get_column(first_letter,color)
       dest = aux[0]
     elsif aux.match?(/^[a-h]x[a-h][1-8]e.p.$/)
+      
       first_letter = aux.slice!(0)
       aux = aux.split('x')
       aux.reject!(&:empty?)
       arr_pieces = get_column(first_letter,color)
+      aux[0].delete!('e.p.')
       dest = aux[0]
+      unless arr_pieces.nil?
+        arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
 
+        arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
+
+        return if arr_pieces.size != 1
+        piece_to_move = arr_pieces[0]
+      end
+      return move_en_passant(piece_to_move.NOTATION, dest)
     elsif aux.match?(/^[a-h]x[a-h][18][QRNB]$/)
       first_letter = aux.slice!(0)
       letter_upgrade = aux.slice!(-1)
@@ -221,10 +234,10 @@ class Chess
     end
 
     unless arr_pieces.nil?
-    arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
-    arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
-    return if arr_pieces.size != 1
-    piece_to_move = arr_pieces[0]
+      arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
+      arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
+      return if arr_pieces.size != 1
+      piece_to_move = arr_pieces[0]
     end
     unless letter_upgrade.nil?
       move_piece(piece_to_move.NOTATION, dest)
@@ -308,12 +321,32 @@ class Chess
 
     aux = board[dest_indices[0]][dest_indices[1]].piece
     board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
-    board[src_indices[0]][src_indices[1]].piece = aux
+    board[src_indices[0]][src_indices[1]].piece = nil
     board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+    turns[board[dest_indices[0]][dest_indices[1]].piece.COLOR.to_sym] += 1
     update_possible_movement_all_pieces()
-    board[dest_indices[0]][dest_indices[1]].piece.up_turn()
     # If the movement is a take return the taken piece, else return the moved piece
     aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
+  end
+
+  def move_en_passant(src_notation, dest_notation)
+    src_indices = get_indices(src_notation)
+    dest_indices = get_indices(dest_notation)
+    aux = nil
+    
+    board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
+    board[src_indices[0]][src_indices[1]].piece = nil
+    board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+    if board[dest_indices[0]][dest_indices[1]].piece.COLOR == 'white'
+      aux = board[dest_indices[0] + 1][dest_indices[1]].piece
+      board[dest_indices[0] + 1][dest_indices[1]].piece = nil
+    else
+      aux = board[dest_indices[0] + 1][dest_indices[1]].piece
+      board[dest_indices[0] - 1][dest_indices[1]].piece = nil
+    end
+    turns[board[dest_indices[0]][dest_indices[1]].piece.COLOR.to_sym] += 1
+    update_possible_movement_all_pieces()
+    aux
   end
 
   def upgrade(notation, letter)
@@ -338,7 +371,9 @@ class Chess
   def update_possible_movement_all_pieces
     board.each do |row|
       row.each do |square|
-        square.piece.generate_possible_movement(board) unless square.piece.nil?
+        next if square.piece.nil?
+        square.piece.instance_of?(Pawn) ? square.piece.generate_possible_movement(board, turns) : square.piece.generate_possible_movement(board)
+
       end
     end
   end

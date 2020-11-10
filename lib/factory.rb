@@ -3,7 +3,7 @@ module Factory
   def generate_full_board(full)
     board =  generate_board()
     return board unless full
-    
+   
     initialize_pawns(board)
     initialize_rooks(board)
     initialize_knights(board)
