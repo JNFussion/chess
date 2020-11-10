@@ -120,9 +120,15 @@ class Chess
     dest = nil
     
     if aux == 'O-O'
-      return
+      rook  = color == 'black' ? board[0][7].piece : board[7][7].piece
+
+      return unless short_castling?(rook)
+      return move_castling(true, color)
     elsif aux == 'O-O-O'
-      return
+      rook  = color == 'black' ? board[0][0].piece : board[7][0].piece
+      
+      return unless long_castling?(rook)
+      return move_castling(false, color)
     elsif aux.match?(/^[BRQNK][a-h][1-8]$/)
       first_letter = aux.slice!(0)
       arr_pieces = find_by_name(first_letter,color)
@@ -324,6 +330,7 @@ class Chess
     board[src_indices[0]][src_indices[1]].piece = nil
     board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
     turns[board[dest_indices[0]][dest_indices[1]].piece.COLOR.to_sym] += 1
+    board[dest_indices[0]][dest_indices[1]].piece.number_of_move += 1 if board[dest_indices[0]][dest_indices[1]].piece.instance_of?(Rook) || board[dest_indices[0]][dest_indices[1]].piece.instance_of?(King)
     update_possible_movement_all_pieces()
     # If the movement is a take return the taken piece, else return the moved piece
     aux.nil? ? board[dest_indices[0]][dest_indices[1]].piece : aux
@@ -333,7 +340,7 @@ class Chess
     src_indices = get_indices(src_notation)
     dest_indices = get_indices(dest_notation)
     aux = nil
-    
+
     board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
     board[src_indices[0]][src_indices[1]].piece = nil
     board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
@@ -348,6 +355,108 @@ class Chess
     update_possible_movement_all_pieces()
     aux
   end
+
+  def move_castling(short, color)
+
+    if short
+      if color == 'black'
+        board[0][5].piece, board[0][6].piece = board[0][7].piece, board[0][4].piece
+        board[0][7].piece, board[0][4].piece = nil, nil
+        board[0][5].piece.position, board[0][6].piece.position = [0,5], [0,6]
+        update_possible_movement_all_pieces()
+        
+        return board[0][5].piece
+      else
+        board[7][5].piece, board[7][6].piece = board[7][7].piece, board[7][4].piece
+        board[7][7].piece, board[7][4].piece = nil, nil
+        board[7][5].piece.position, board[7][6].piece.position = [7,5], [7,6]
+        update_possible_movement_all_pieces()
+        
+        return board[7][5].piece
+      end
+    else
+      if color == 'black'
+        board[0][3].piece, board[0][2].piece = board[0][0].piece, board[0][4].piece
+        board[0][7].piece, board[0][4].piece = nil, nil
+        
+        board[0][3].piece.position, board[0][2].piece.position = [0,3], [0,2]
+        update_possible_movement_all_pieces()
+
+        return board[0][3].piece
+      else
+        board[7][3].piece, board[7][2].piece = board[7][0].piece, board[7][4].piece
+        board[7][7].piece, board[7][4].piece = nil, nil
+        board[7][3].piece.position, board[7][2].piece.position = [7,3], [7,2]
+        update_possible_movement_all_pieces()
+        
+        return board[7][3].piece
+      end
+    end
+
+  end
+
+  def short_castling?(rook)
+    return false unless rook.instance_of?(Rook)
+
+    king = rook.COLOR == 'black' ? board[0][4].piece : board[7][4].piece
+    return false  unless king.instance_of?(King)
+
+    og_pos = king.position
+    color = rook.COLOR == 'black' ? 'white' : 'black'
+    pieces = get_pieces_by_color(color)
+    result = nil
+
+    return false if !king.number_of_move.zero? || !rook.number_of_move.zero? || king.check?(pieces) || !board[king.position[0]][king.position[1] + 1].piece.nil? || !board[king.position[0]][king.position[1] + 2].piece.nil?
+
+    1.upto(2) do |num|
+
+      board[og_pos[0]][og_pos[1] + num].piece = king
+      board[og_pos[0]][og_pos[1] + num].piece.position = [og_pos[0], og_pos[1] + num]
+      update_possible_movement_all_pieces()
+
+      result = board[king.position[0]][king.position[1]].piece.check?(pieces)
+      board[king.position[0]][king.position[1]].piece = nil
+      
+      break if result
+    end
+
+    board[og_pos[0]][og_pos[1]].piece.position = og_pos
+    update_possible_movement_all_pieces()
+
+    !result
+  end
+
+  def long_castling?(rook)
+    return false unless rook.instance_of?(Rook)
+
+    king = rook.COLOR == 'black' ? board[0][4].piece : board[7][4].piece
+    return false  unless king.instance_of?(King)
+
+    og_pos = king.position
+    color = rook.COLOR == 'black' ? 'white' : 'black'
+    pieces = get_pieces_by_color(color)
+    result = nil
+
+    return false if !king.number_of_move.zero? || !rook.number_of_move.zero? || king.check?(pieces) || !board[king.position[0]][king.position[1] - 1].piece.nil? || !board[king.position[0]][king.position[1] - 2].piece.nil?
+
+    1.upto(2) do |num|
+
+      board[og_pos[0]][og_pos[1] - num].piece = king
+      board[og_pos[0]][og_pos[1] - num].piece.position = [og_pos[0], og_pos[1] - num]
+      update_possible_movement_all_pieces()
+
+      result = board[king.position[0]][king.position[1]].piece.check?(pieces)
+      board[king.position[0]][king.position[1]].piece = nil
+      
+      break if result
+    end
+
+    board[og_pos[0]][og_pos[1]].piece.position = og_pos
+    update_possible_movement_all_pieces()
+
+    !result
+  end
+
 
   def upgrade(notation, letter)
     indices = get_indices(notation)

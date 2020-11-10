@@ -591,38 +591,17 @@ describe 'Chess' do
 
       it 'exd6e.p.' do
         @chess.move('e4', 'white')
-        @chess.draw_board
-        puts
         @chess.move('e5','black')
-        @chess.draw_board
-        puts
         @chess.move('Nf3','white')
-        @chess.draw_board
-        puts
         @chess.move('Nf6','black')
-        @chess.draw_board
-        puts
         @chess.move('d4','white')
-        @chess.draw_board
-        puts
         @chess.move('exd4','black')
-        @chess.draw_board
-        puts
         @chess.move('e5','white')
-        @chess.draw_board
-        puts
         @chess.move('Ne4','black')
-        @chess.draw_board
-        puts
         @chess.move('Qxd4','white')
-        @chess.draw_board
-        puts
         pawn = @chess.move('d5','black')
-        @chess.draw_board
-        puts
+
         expect(@chess.move('exd6e.p.','white')).to eql(pawn)
-        @chess.draw_board
-        puts
       end
 
 
@@ -666,13 +645,50 @@ describe 'Chess' do
       end
     end
     context 'castling' do 
-      it 'White: O-O' do
-        @empty_chess.board[7][7].piece = Rook.new('white', [0,0])
-        @empty_chess.board[7][4].piece = King.new('white', [0,4])
+      it 'White: O-O check' do
+        @empty_chess.board[7][7].piece = Rook.new('white', [7,7])
+        @empty_chess.board[7][4].piece = King.new('white', [7,4])
+        @empty_chess.board[7][7].piece.generate_possible_movement(@empty_chess.board)
+        @empty_chess.board[7][4].piece.generate_possible_movement(@empty_chess.board)
+        rook = @empty_chess.board[7][7].piece
+        expect(@empty_chess.short_castling?(rook)).to eql(true)
+      end
+      
+      it 'White: O-O move' do
+        @empty_chess.board[7][7].piece = Rook.new('white', [7,7])
+        @empty_chess.board[7][4].piece = King.new('white', [7,4])
         @empty_chess.board[7][7].piece.generate_possible_movement(@empty_chess.board)
         @empty_chess.board[7][4].piece.generate_possible_movement(@empty_chess.board)
         rook = @empty_chess.board[7][7].piece
         expect(@empty_chess.move('O-O', 'white')).to eql(rook)
+      end
+
+      it 'Black: O-O check' do
+        @empty_chess.board[0][7].piece = Rook.new('black', [0,0])
+        @empty_chess.board[0][4].piece = King.new('black', [0,4])
+        @empty_chess.board[0][7].piece.generate_possible_movement(@empty_chess.board)
+        @empty_chess.board[0][4].piece.generate_possible_movement(@empty_chess.board)
+        rook = @empty_chess.board[0][7].piece
+        expect(@empty_chess.short_castling?(rook)).to eql(true)
+      end
+
+      it 'Black: O-O move' do
+        @empty_chess.board[0][7].piece = Rook.new('black', [0,0])
+        @empty_chess.board[0][4].piece = King.new('black', [0,4])
+        @empty_chess.board[0][7].piece.generate_possible_movement(@empty_chess.board)
+        @empty_chess.board[0][4].piece.generate_possible_movement(@empty_chess.board)
+        rook = @empty_chess.board[0][7].piece
+        expect(@empty_chess.move('O-O', 'black')).to eql(rook)
+      end
+
+
+      it 'Black: O-O-O' do
+        @empty_chess.board[0][0].piece = Rook.new('black', [0,0])
+        @empty_chess.board[0][4].piece = King.new('black', [0,4])
+        @empty_chess.board[0][0].piece.generate_possible_movement(@empty_chess.board)
+        @empty_chess.board[0][4].piece.generate_possible_movement(@empty_chess.board)
+        rook = @empty_chess.board[0][0].piece
+        expect(@empty_chess.long_castling?(rook)).to eql(true)
       end
 
       it 'Black: O-O-O' do

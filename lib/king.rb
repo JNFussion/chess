@@ -4,12 +4,15 @@ class King < Piece
 
   @@SYMBOLS = {white: "\u2654", black: "\u265A" }
 
+  attr_accessor :number_of_move
+
   def initialize(color, initial_position)
     super(color, initial_position)
     @SYMBOL = @@SYMBOLS[color.to_sym]
     @MOVEMENT = KING_MOVEMENT
+    @number_of_move = 0
   end
-  
+
   def generate_possible_movement(board)
     pos_mov = Array.new(@MOVEMENT)
 
