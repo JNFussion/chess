@@ -38,79 +38,78 @@ class Chess
 
   end
 
-  # def play
+  def play
+    color = ['white', 'black']
+    counter = 0
+    info()
 
-  #   info()
+    # Loop of the game. It breaks when there is a checkmate or stalemate
 
-  #   loop do
-  #     arr_input = []
-  #     draw_board()
-  #     loop do
-  #       puts '[WHITE] My move is: '
-  #       input = gets.chomp
-  #       input.upcase!
-  #       arr_input = input.split(' ')
-  #       break if correct_input?(arr_input) && move_piece?(arr_input[0], arr_input[1])
-
-  #       puts 'Incorrect move, try again..'
-  #     end
-  #     move_piece(arr_input[0], arr_input[1])
-  #     draw_board()
-
-  #     if get_king('black').checkmate?(get_pieces_by_color('white'))
-  #       puts '*' * 10
-  #       puts 'WHITE WON!'
-  #       puts '*' * 10
-  #       return
-  #     elsif get_king('black').stalemate?(get_pieces_by_color('white'))
-  #       puts '*' * 10
-  #       puts 'DRAW'
-  #       puts '*' * 10
-  #       return
-  #     elsif get_king('black').check?(get_pieces_by_color('white'))
-  #       @notation_king = get_notation(get_king('black'))
-  #     end
-
-  #     loop do
-  #       puts '[BLACK] My move is: '
-  #       input = gets.chomp
-  #       input.upcase!
-  #       arr_input = input.split(' ')
-  #       break if correct_input?(arr_input) && move_piece?(arr_input[0], arr_input[1])
-
-  #       puts 'Incorrect move, try again..'
-  #     end
+    loop do
+      draw_board()
       
-  #     move_piece(arr_input[0], arr_input[1])
+      # Loop of input. Ask input, then move the piece given in the input. It breaks if move method return a piece of the board.
 
-  #     if get_king('white').checkmate?(get_pieces_by_color('black'))
-  #       puts '*' * 10
-  #       puts 'BLACK WON!'
-  #       puts '*' * 10
-  #       return
-  #     elsif get_king('white').stalemate?(get_pieces_by_color('black'))
-  #       puts '*' * 10
-  #       puts 'DRAW'
-  #       puts '*' * 10
-  #       return
-  #     elsif get_king('white').check?(get_pieces_by_color('black'))
-  #       @notation_king = get_notation(get_king('white'))
-  #     end
-  #   end
-  # end
+      loop do
+        break if !move(get_input(color[counter%2]), color[counter%2]).nil?
+        puts 'That move is not possible. Please, try again.'
+      end
+
+      # get the king of the oposite color of the current turn. Also 
+
+      king = find_by_name('K', color[(counter + 1)%2])
+      pieces = get_pieces_by_color(color[counter%2])
+      if king.checkmate?(pieces)
+        display_win(color[counter%2])
+        return
+      elsif king.stalemate?(pieces)
+        display_draw()
+        return
+      elsif king.check?(pieces)
+
+      end
+
+      counter += 1
+    end
+
+  end
+
+  def get_input(color)
+    
+    loop do
+    puts "[#{color.upcase}] My move is: "
+    input = gets.chomp
+    return if correct_input?(input)
+    end
+    
+  end
+
+  def display_win(color)
+    puts '*' * 10
+    puts "#{color.upcase} WON"
+    puts '*' * 10
+  end
+
+  def display_draw
+    puts '*' * 10
+    puts "DRAW"
+    puts '*' * 10
+  end
+
   
   def info
     puts 'Info:'
     puts '1. Use Algebraic notation to move pieces. I.e: "Be5"  (move a bishop to e5)'
     puts '2. Use "O-O" or "O-O-O" to indicate castling '
-    puts '2. Type "DRAW" to propose a draw.'
     puts '2. Type "EXIT" to go back to menu.'
     puts
     puts 'Type to continue...'
     gets
   end
+
   # Input: the notations of the move
   # Color: the color of the piece you want to move
+  
   def move(input, color)
     aux = input
 
@@ -121,12 +120,10 @@ class Chess
     
     if aux == 'O-O'
       rook  = color == 'black' ? board[0][7].piece : board[7][7].piece
-
       return unless short_castling?(rook)
       return move_castling(true, color)
     elsif aux == 'O-O-O'
       rook  = color == 'black' ? board[0][0].piece : board[7][0].piece
-      
       return unless long_castling?(rook)
       return move_castling(false, color)
     elsif aux.match?(/^[BRQNK][a-h][1-8]$/)
@@ -147,21 +144,55 @@ class Chess
       return unless letter_match_piece?(first_letter, piece_to_move.piece)
       dest = aux[-2..-1]
     elsif aux.match?(/^[BRQNK][a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      arr_pieces = find_by_name(first_letter,color)
+      dest = aux[-2..-1]
     elsif aux.match?(/^[BRQNK][a-h][a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
+      dest = aux[-2..-1]
     elsif aux.match?(/^[BRQNK][1-8][a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
+      dest = aux[-2..-1]
     elsif aux.match?(/^[BRQNK][a-h][1-8][a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      piece_to_move = get_by_notation(aux[0..1], color)
+      return unless letter_match_piece?(first_letter, piece_to_move.piece)
+      dest = aux[-2..-1]
     elsif aux.match?(/^[BRQNK]x[a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = find_by_name(first_letter, color)
+      dest = aux[0]
     elsif aux.match?(/^[BRQNK][a-h]x[a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(aux[0],color)
+      dest = aux[1]
     elsif aux.match?(/^[BRQNK][1-8]x[a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_row(aux[0],color)
+      dest = aux[1]
     elsif aux.match?(/^[BRQNK][a-h][1-8]x[a-h][1-8][+#]$/)
-
+      aux.slice!(-1)
+      first_letter = aux.slice!(0)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      piece_to_move = get_by_notation(aux[0], color)
+      return unless letter_match_piece?(first_letter, piece_to_move.piece)
+      dest = aux[1]
     elsif aux.match?(/^[BRQNK]x[a-h][1-8]$/)
       first_letter = aux.slice!(0)
       aux = aux.split('x')
@@ -239,89 +270,33 @@ class Chess
       dest = aux[0]
     end
 
+    # Delete any piece that no match the letter given in the notation and the name of the piece (pawn if there is no letter). Also, it delete any piece that cannot move to the destination position.
+    # Return nil if 
+
     unless arr_pieces.nil?
       arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
       arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
       return if arr_pieces.size != 1
       piece_to_move = arr_pieces[0]
     end
+
     unless letter_upgrade.nil?
       move_piece(piece_to_move.NOTATION, dest)
       upgrade(dest, letter_upgrade)
     else
       move_piece(piece_to_move.NOTATION, dest)
     end
+
   end
-
-  # def move(input, color)
-  #   aux = input
-  #   first_letter = aux.slice!(0) unless aux.length == 2
-
-  #   letter_upgrade = nil
-  #   piece_to_move = nil
-  #   arr_pieces = nil
-  #   dest = nil
-
-    
-
-  #   if aux.include?('x')
-  #     aux = aux.split('x')
-  #     aux.reject!(&:empty?)
-  #     if aux.size == 1
-  #       if first_letter.match?(/[RNBQK]/)
-  #         arr_pieces = find_by_name(first_letter, color)
-  #       else
-  #         arr_pieces = get_column(first_letter,color)
-  #       end
-  #       dest = aux[0]
-  #     elsif aux.size == 2
-  #       if aux[0].match?(/[a-h][1-8]/)
-  #         piece_to_move = get_by_notation(aux[0], color)
-  #         return unless letter_match_piece?(first_letter, piece_to_move.piece)
-  #       elsif aux[0].match?(/[a-h]/)
-  #         arr_pieces = get_column(aux[0],color)
-  #       elsif aux[0].match?(/[1-8]/)
-  #         arr_pieces = get_row(aux[0],color)
-  #       end
-  #       dest = aux[1]
-  #     end
-  #   else
-  #     if !first_letter.nil? && first_letter.match?(/[RNBQK]/)
-  #       if aux.length == 2
-  #         arr_pieces = find_by_name(first_letter,color)
-  #       elsif aux.length == 3
-  #         arr_pieces = aux[0].match?(/[a-h]/) ? get_column(aux[0],color) : get_row(aux[0],color)
-  #       elsif aux.length == 4
-  #         piece_to_move = get_by_notation(aux[0..1], color)
-  #         return unless letter_match_piece?(first_letter, piece_to_move.piece)
-  #       end
-  #     else
-  #       arr_pieces = find_by_name(color)
-  #     end
-  #     dest = aux[-2..-1]
-  #   end
-
-  #   unless arr_pieces.nil?
-  #   arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
-  #   arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
-  #   return if arr_pieces.size != 1
-  #   piece_to_move = arr_pieces[0]
-  #   end
-    
-  #   move_piece(piece_to_move.NOTATION, dest)
-  # end
-
-
-
-  # def move_piece?(src, dest)
-  #   get_piece_by_notation(src).possible_movement?(get_indices(dest))
-  # end
 
   def move_piece(src_notation, dest_notation)
 
     # Get indices of origin position and destination position
     src_indices = get_indices(src_notation)
     dest_indices = get_indices(dest_notation)
+
+
+    # return if will_leave_king_in_check?(src_indices, dest_indices)
 
     # swap origin piece for destiantion piece
 
@@ -351,10 +326,14 @@ class Chess
       aux = board[dest_indices[0] + 1][dest_indices[1]].piece
       board[dest_indices[0] - 1][dest_indices[1]].piece = nil
     end
+    
     turns[board[dest_indices[0]][dest_indices[1]].piece.COLOR.to_sym] += 1
     update_possible_movement_all_pieces()
+    
     aux
   end
+
+  # Castling movement. There are 4 types product of Queenside and Kingside and color of the piece. Return the rook
 
   def move_castling(short, color)
 
@@ -395,6 +374,37 @@ class Chess
 
   end
 
+  # def will_leave_king_in_check?(src_indices, dest_indices)
+    
+  #   king_same_color_src = find_by_name('K', board[src_indices[0]][src_indices[1]].piece.COLOR)
+  #   return false if king_same_color_src.empty?
+
+  #   # Make the move and update the possible movement of all pieces.
+    
+  #   aux_dest = board[dest_indices[0]][dest_indices[1]].piece
+  #   board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
+  #   board[src_indices[0]][src_indices[1]].piece = nil
+  #   board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+  #   update_possible_movement_all_pieces()
+    
+  #   # Get the king of the piece that has been moved.
+    
+  #   color = board[dest_indices[0]][dest_indices[1]].piece.COLOR == 'white' ? 'white' : 'black'
+  #   pieces_op_color = get_pieces_by_color(color)
+    
+  #   # See if king is in check
+
+  #   result = king_same_color_src[0].piece.check?(pieces_op_color)
+
+  #   board[src_indices[0]][src_indices[1]].piece = board[dest_indices[0]][dest_indices[1]].piece
+  #   board[src_indices[0]][src_indices[1]].piece.position = src_indices
+  #   board[dest_indices[0]][dest_indices[1]].piece = aux_dest
+  #   update_possible_movement_all_pieces()
+
+
+  #   result
+  # end
+
   def short_castling?(rook)
     return false unless rook.instance_of?(Rook)
 
@@ -406,7 +416,11 @@ class Chess
     pieces = get_pieces_by_color(color)
     result = nil
 
+    # Return false if kign and rook have move, the square between them aren't empty and king is in check
+
     return false if !king.number_of_move.zero? || !rook.number_of_move.zero? || king.check?(pieces) || !board[king.position[0]][king.position[1] + 1].piece.nil? || !board[king.position[0]][king.position[1] + 2].piece.nil?
+
+    # This loop check that any piece can move to the square between rook and king. Move king temporaly.
 
     1.upto(2) do |num|
 
@@ -420,11 +434,15 @@ class Chess
       break if result
     end
 
+    # Restore king to his original position
+
     board[og_pos[0]][og_pos[1]].piece.position = og_pos
     update_possible_movement_all_pieces()
 
     !result
   end
+
+  # Check if Queenside castling is possible
 
   def long_castling?(rook)
     return false unless rook.instance_of?(Rook)
@@ -437,7 +455,11 @@ class Chess
     pieces = get_pieces_by_color(color)
     result = nil
 
+    # Return false if kign and rook have move, the square between them aren't empty and king is in check
+
     return false if !king.number_of_move.zero? || !rook.number_of_move.zero? || king.check?(pieces) || !board[king.position[0]][king.position[1] - 1].piece.nil? || !board[king.position[0]][king.position[1] - 2].piece.nil?
+
+    # This loop check that any piece can move to the square between rook and king. Move king temporaly.
 
     1.upto(2) do |num|
 
@@ -450,6 +472,8 @@ class Chess
       
       break if result
     end
+
+    # Restore king to his original position
 
     board[og_pos[0]][og_pos[1]].piece.position = og_pos
     update_possible_movement_all_pieces()
@@ -644,8 +668,7 @@ class Chess
     false
   end
 
-  def draw_board
-    
+  def draw_board 
     @board.each do |row|
       row.each do |value| 
         if value.piece.nil?
@@ -656,9 +679,7 @@ class Chess
       end
       puts
     end
-
   end
-
 end
 
 
