@@ -65,8 +65,6 @@ class Chess
       elsif king.stalemate?(pieces)
         display_draw()
         return
-      elsif king.check?(pieces)
-
       end
 
       counter += 1
@@ -296,7 +294,7 @@ class Chess
     dest_indices = get_indices(dest_notation)
 
 
-    # return if will_leave_king_in_check?(src_indices, dest_indices)
+    return if will_leave_king_in_check?(src_indices, dest_indices)
 
     # swap origin piece for destiantion piece
 
@@ -374,36 +372,30 @@ class Chess
 
   end
 
-  # def will_leave_king_in_check?(src_indices, dest_indices)
+  def will_leave_king_in_check?(src_indices, dest_indices)
+    # Make the move and update the possible movement of all pieces.
     
-  #   king_same_color_src = find_by_name('K', board[src_indices[0]][src_indices[1]].piece.COLOR)
-  #   return false if king_same_color_src.empty?
+    aux_dest = board[dest_indices[0]][dest_indices[1]].piece
+    board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
+    board[src_indices[0]][src_indices[1]].piece = nil
+    board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
+    update_possible_movement_all_pieces()
 
-  #   # Make the move and update the possible movement of all pieces.
+    # Get the king of the piece that has been moved.
+    king_same_color_src = find_by_name('K', board[dest_indices[0]][dest_indices[1]].piece.COLOR)
+    color = board[dest_indices[0]][dest_indices[1]].piece.COLOR == 'white' ? 'black' : 'white'
+    pieces_op_color = get_pieces_by_color(color)
     
-  #   aux_dest = board[dest_indices[0]][dest_indices[1]].piece
-  #   board[dest_indices[0]][dest_indices[1]].piece = board[src_indices[0]][src_indices[1]].piece
-  #   board[src_indices[0]][src_indices[1]].piece = nil
-  #   board[dest_indices[0]][dest_indices[1]].piece.position = dest_indices
-  #   update_possible_movement_all_pieces()
+    # See if king is in check
+    result = king_same_color_src[0].piece.check?(pieces_op_color)
+
+    board[src_indices[0]][src_indices[1]].piece = board[dest_indices[0]][dest_indices[1]].piece
+    board[src_indices[0]][src_indices[1]].piece.position = src_indices
+    board[dest_indices[0]][dest_indices[1]].piece = aux_dest
+    update_possible_movement_all_pieces()
     
-  #   # Get the king of the piece that has been moved.
-    
-  #   color = board[dest_indices[0]][dest_indices[1]].piece.COLOR == 'white' ? 'white' : 'black'
-  #   pieces_op_color = get_pieces_by_color(color)
-    
-  #   # See if king is in check
-
-  #   result = king_same_color_src[0].piece.check?(pieces_op_color)
-
-  #   board[src_indices[0]][src_indices[1]].piece = board[dest_indices[0]][dest_indices[1]].piece
-  #   board[src_indices[0]][src_indices[1]].piece.position = src_indices
-  #   board[dest_indices[0]][dest_indices[1]].piece = aux_dest
-  #   update_possible_movement_all_pieces()
-
-
-  #   result
-  # end
+    result
+  end
 
   def short_castling?(rook)
     return false unless rook.instance_of?(Rook)
@@ -681,5 +673,3 @@ class Chess
     end
   end
 end
-
-
