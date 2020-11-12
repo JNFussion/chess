@@ -4,7 +4,7 @@ require 'pry'
 describe 'Chess' do
   before { @chess = Chess.new }
   before { @empty_chess = Chess.new(false) }
-  describe '#move' do
+  describe '#move_piece' do
     context 'd4 Rook initial board' do
       it 'White rook: d4 to d7 return Rook' do
         @chess.board[4][3].piece = Rook.new('white', [4, 3])
@@ -1013,6 +1013,18 @@ describe 'Chess' do
           expect(@empty_chess.move('O-O-O', 'black')).to eql(nil)
         end
       end
+    end
+  end
+
+  describe '#play' do
+    it 'White win' do
+      
+    end
+    it 'Black win' do
+
+    end
+    it 'Draw' do
+
     end
   end
 end

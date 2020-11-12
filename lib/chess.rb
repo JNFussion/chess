@@ -660,16 +660,71 @@ class Chess
     false
   end
 
-  def draw_board 
-    @board.each do |row|
-      row.each do |value| 
+  def draw_board
+    letters = ('a'..'h').to_a
+    
+    vertical_bar = "\u2502"
+    fat_vertical_bar = "\u2503"
+    horizontal_bar = "\u2500"
+    fat_horizontal_bar = "\u2501"
+    t_shape_down = "\u252F"
+    t_shape_up = "\u2537"
+    t_shape_right = "\u2520"
+    t_shape_left = "\u2528"
+    cross = "\u253C"
+    box = "\u2591"
+    top_left_corner = "\u250F"
+    top_right_corner = "\u2513"
+    bottom_left_corner = "\u2517"
+    bottom_right_corner = "\u251B"
+    print " " * 4
+    letters.each {|letter| print letter + " " * 3 }
+    puts
+    puts "  "+top_left_corner + (fat_horizontal_bar * 3 + t_shape_down) * 7 + fat_horizontal_bar * 3 + top_right_corner
+    
+    @board.each_with_index do |row, row_index|
+      print "#{(row_index + 1)} " + fat_vertical_bar
+      row.each_with_index do |value, collum| 
         if value.piece.nil?
-          print "."
+          if row_index.even?
+            if collum.even?
+              if row.last == value
+                print " " * 3 + fat_vertical_bar
+              else
+                print " " * 3  + vertical_bar
+              end
+            else
+              if row.last == value
+                print " " + box + " " + fat_vertical_bar
+              else
+                print " " + box + " " + vertical_bar
+              end
+            end
+          else
+            if collum.even?
+              if row.last == value
+                print " " + box + " " + fat_vertical_bar
+              else
+                print " " + box + " " + vertical_bar
+              end
+            else
+              if row.last == value
+                print " " * 3 + fat_vertical_bar
+              else
+                print " " * 3 + vertical_bar
+              end
+            end
+          end
+        elsif row.last == value
+          print ' ' +value.piece.SYMBOL + ' ' + fat_vertical_bar
         else
-          print value.piece.SYMBOL
+          print  ' ' + value.piece.SYMBOL+ ' ' + vertical_bar
         end
       end
       puts
+      print "  "+t_shape_right + (horizontal_bar * 3 + cross) * 7 + horizontal_bar * 3 + t_shape_left if row_index != 7
+      puts if row_index != 7
     end
+    puts "  " + bottom_left_corner + (fat_horizontal_bar * 3 + t_shape_up) * 7 + fat_horizontal_bar * 3 + bottom_right_corner
   end
 end
