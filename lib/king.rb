@@ -54,6 +54,7 @@ class King < Piece
   end
 
   def danger_in_all_possible_movement?(pieces)
+    return false if self.possible_movement.empty?
     self.possible_movement.all? do |king_pos|
       pieces.any? do |piece|
         piece.possible_movement.any? do |piece_pos|

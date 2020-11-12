@@ -1016,15 +1016,4 @@ describe 'Chess' do
     end
   end
 
-  describe '#play' do
-    it 'White win' do
-      
-    end
-    it 'Black win' do
-
-    end
-    it 'Draw' do
-
-    end
-  end
 end

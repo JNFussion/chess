@@ -6,27 +6,38 @@ require_relative 'bishop'
 require_relative 'king'
 require_relative 'queen'
 require_relative 'factory'
-
+require 'yaml'
 
 
 class Chess
   include Factory
 
-  attr_accessor :turns
-  attr_reader :board
+  attr_accessor :turns, :board, :game_over
+
   def initialize(full = true)
     @board = self.generate_full_board(full)
     @turns = {:black => 0, :white => 0}
+    @game_over = false
+  end
+
+  def new_game
+    self.board = self.generate_full_board(full)
+    self.turns = {:black => 0, :white => 0}
+    self.game_over = false
   end
 
   def game
     option = nil
     loop do
+      system("clear") || system("cls")
+      
       menu()
       puts 'Introduce option: '
       option = gets.chomp
-      break if select(option).nil?
-      puts 'Incorrect input, try again...'
+      out = select(option)
+      break if out.nil?
+      
+      puts 'Incorrect input, try again...' if out == 1
     end
   end
 
@@ -37,21 +48,43 @@ class Chess
     puts "3. Load game."
 
   end
+  
+  
+  def save
+    Dir.mkdir('save_games') unless Dir.exist? 'save_games'
+    game_file = File.new('save_games/chess_save_game.yaml', 'w')
+    game_file.write(YAML.dump(self))
+  end
+
+  def load
+    game_file = File.new('save_games/chess_save_game.yaml', 'r')
+    yaml = YAML.load(game_file.read)
+    self.board = yaml.board
+    self.turns = yaml.turns
+    self.game_over = yaml.game_over
+  end
 
   def play
+    puts 'New game? (Y/n)'
+    new = gets.chomp
+    new_game() if @game_over || new.downcase[0] == 'y'
     color = ['white', 'black']
     counter = 0
+    system("clear") || system("cls")
     info()
 
     # Loop of the game. It breaks when there is a checkmate or stalemate
 
     loop do
+      system("clear") || system("cls")
       draw_board()
       
       # Loop of input. Ask input, then move the piece given in the input. It breaks if move method return a piece of the board.
 
       loop do
-        break if !move(get_input(color[counter%2]), color[counter%2]).nil?
+        input = get_input(color[counter%2])
+        return if input.downcase == "exit"
+        break if !move(input, color[counter%2]).nil?
         puts 'That move is not possible. Please, try again.'
       end
 
@@ -59,11 +92,23 @@ class Chess
 
       king = find_by_name('K', color[(counter + 1)%2])
       pieces = get_pieces_by_color(color[counter%2])
-      if king.checkmate?(pieces)
+      if king[0].piece.checkmate?(pieces)
+        puts 'AAAAAAAAAAAAAAAAa'
+        sleep(5)
+        system("clear") || system("cls")
+        draw_board()
+        puts
         display_win(color[counter%2])
+        game_over = true
         return
-      elsif king.stalemate?(pieces)
+      elsif king[0].piece.stalemate?(pieces)
+        puts 'BBBBBBBBBBBBBBBBBBBBBBB'
+        sleep(5)
+        system("clear") || system("cls")
+        draw_board()
+        puts
         display_draw()
+        game_over = true
         return
       end
 
@@ -77,7 +122,7 @@ class Chess
     loop do
     puts "[#{color.upcase}] My move is: "
     input = gets.chomp
-    return if correct_input?(input)
+    return input if correct_input?(input)
     end
     
   end
@@ -622,9 +667,11 @@ class Chess
      
     if input.match?(/^[BRQNK][a-h][1-8]$|^[BRQNK][a-h][a-h][1-8]$|^[BRQNK][1-8][a-h][1-8]$|^[BRQNK][a-h][1-8][a-h][1-8]$|^[BRQNK][a-h][1-8][+#]$|^[BRQNK][a-h][a-h][1-8][+#]$|^[BRQNK][1-8][a-h][1-8][+#]$|^[BRQNK][a-h][1-8][a-h][1-8][+#]$|^[BRQNK]x[a-h][1-8][+#]$|^[BRQNK][a-h]x[a-h][1-8][+#]$|^[BRQNK][1-8]x[a-h][1-8][+#]$|^[BRQNK][a-h][1-8]x[a-h][1-8][+#]$|^[BRQNK]x[a-h][1-8]$|^[BRQNK][a-h]x[a-h][1-8]$|^[BRQNK][1-8]x[a-h][1-8]$|^[BRQNK][a-h][1-8]x[a-h][1-8]$|^[a-h][1-8]$|^[a-h][18][BRQN]$|^[a-h][18]=[BRQN]$|^[a-h]x[a-h][1-8]$|^[a-h]x[a-h][1-8]e.p.$|^[a-h]x[a-h][18][BRQN]$|^[a-h]x[a-h][18]=[BRQN]$/)
       return true
-     elsif input == 'O-O' || input == 'O-O-O'
+    elsif input == 'O-O' || input == 'O-O-O'
       return true
-     end
+    elsif input.downcase == 'exit'
+      return true
+    end
 
      false
   end
@@ -637,11 +684,17 @@ class Chess
       play()
     elsif option.downcase == '2' || option.downcase == '2.' || option.downcase == 'save' || option.downcase == 'save game' || option.downcase == '2. save game'
       save()
+      puts "\nGame have been save..."
+      sleep(2)
     elsif option.downcase == '3' || option.downcase == '3.' || option.downcase == 'load' || option.downcase == 'load game' || option.downcase == '3. load game'
       load()
+      puts "\nGame is load..."
+      sleep(2)
     elsif option.downcase == 'exit'
       return 
     end
+
+    return 2
   end
 
 
@@ -662,7 +715,7 @@ class Chess
 
   def draw_board
     letters = ('a'..'h').to_a
-    
+    number = 8
     vertical_bar = "\u2502"
     fat_vertical_bar = "\u2503"
     horizontal_bar = "\u2500"
@@ -683,7 +736,8 @@ class Chess
     puts "  "+top_left_corner + (fat_horizontal_bar * 3 + t_shape_down) * 7 + fat_horizontal_bar * 3 + top_right_corner
     
     @board.each_with_index do |row, row_index|
-      print "#{(row_index + 1)} " + fat_vertical_bar
+      print "#{ number} " + fat_vertical_bar
+      number -= 1
       row.each_with_index do |value, collum| 
         if value.piece.nil?
           if row_index.even?

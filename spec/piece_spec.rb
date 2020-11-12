@@ -495,6 +495,12 @@ describe 'Piece' do
       end
     end
     describe '#stalemate?' do
+      it 'return false' do
+        king = @chess.board[0][4].piece
+        pieces = @chess.get_pieces_by_color('white')
+        expect(king.stalemate?(pieces)).to eql(false)
+      end
+
       it 'return true' do
         @empty_board.board[0][7].piece  = King.new('black', [0,4])
         @empty_board.board[0][7].piece.position = [0, 7]
