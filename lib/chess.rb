@@ -21,7 +21,7 @@ class Chess
   end
 
   def new_game
-    self.board = self.generate_full_board(full)
+    self.board = self.generate_full_board(true)
     self.turns = {:black => 0, :white => 0}
     self.game_over = false
   end
@@ -64,7 +64,7 @@ class Chess
     self.game_over = yaml.game_over
   end
 
-  def play
+  def play()
     puts 'New game? (Y/n)'
     new = gets.chomp
     new_game() if @game_over || new.downcase[0] == 'y'
@@ -73,10 +73,14 @@ class Chess
     system("clear") || system("cls")
     info()
 
+
+
+
     # Loop of the game. It breaks when there is a checkmate or stalemate
 
     loop do
       system("clear") || system("cls")
+      
       draw_board()
       
       # Loop of input. Ask input, then move the piece given in the input. It breaks if move method return a piece of the board.
@@ -90,20 +94,16 @@ class Chess
 
       # get the king of the oposite color of the current turn. Also 
 
-      king = find_by_name('K', color[(counter + 1)%2])
-      pieces = get_pieces_by_color(color[counter%2])
-      if king[0].piece.checkmate?(pieces)
-        puts 'AAAAAAAAAAAAAAAAa'
-        sleep(5)
+      if self.checkmate?(color[(counter + 1)%2])
+        sleep(2)
         system("clear") || system("cls")
         draw_board()
         puts
         display_win(color[counter%2])
         game_over = true
         return
-      elsif king[0].piece.stalemate?(pieces)
-        puts 'BBBBBBBBBBBBBBBBBBBBBBB'
-        sleep(5)
+      elsif self.stalemate?(color[(counter + 1)%2])
+        sleep(2)
         system("clear") || system("cls")
         draw_board()
         puts
@@ -123,20 +123,21 @@ class Chess
     puts "[#{color.upcase}] My move is: "
     input = gets.chomp
     return input if correct_input?(input)
+    puts 'Thats not a valid notation, please try again.'
     end
     
   end
 
   def display_win(color)
-    puts '*' * 10
-    puts "#{color.upcase} WON"
-    puts '*' * 10
+    puts '*' * 35
+    puts ' ' * 13 + "#{color.upcase} WON"
+    puts '*' * 35
   end
 
   def display_draw
-    puts '*' * 10
-    puts "DRAW"
-    puts '*' * 10
+    puts '*' * 35
+    puts ' ' * 15 + "DRAW"
+    puts '*' * 35
   end
 
   
@@ -236,6 +237,17 @@ class Chess
       piece_to_move = get_by_notation(aux[0], color)
       return unless letter_match_piece?(first_letter, piece_to_move.piece)
       dest = aux[1]
+    elsif aux.match?(/^[a-h][1-8][+#]$/)
+      aux.slice!(-1)
+      arr_pieces = find_by_name(color)
+      dest = aux[-2..-1]
+    elsif aux.match?(/^[a-h]x[a-h][1-8][+#]$/)
+      first_letter = aux.slice!(0)
+      aux.slice!(-1)
+      aux = aux.split('x')
+      aux.reject!(&:empty?)
+      arr_pieces = get_column(first_letter,color)
+      dest = aux[0]
     elsif aux.match?(/^[BRQNK]x[a-h][1-8]$/)
       first_letter = aux.slice!(0)
       aux = aux.split('x')
@@ -312,17 +324,17 @@ class Chess
       arr_pieces = get_column(first_letter,color)
       dest = aux[0]
     end
-
     # Delete any piece that no match the letter given in the notation and the name of the piece (pawn if there is no letter). Also, it delete any piece that cannot move to the destination position.
-    # Return nil if 
-
+    # Return nil if there is more than 1 piece of the same type that can move to destination or there is none that can move to destination.
     unless arr_pieces.nil?
       arr_pieces = delete_dif_by_name(arr_pieces, first_letter, color) unless first_letter.nil?
       arr_pieces.delete_if {|square| !square.piece.possible_movement?(get_indices(dest))}
       return if arr_pieces.size != 1
       piece_to_move = arr_pieces[0]
     end
-
+    
+    return if piece_to_move.nil?
+    
     unless letter_upgrade.nil?
       move_piece(piece_to_move.NOTATION, dest)
       upgrade(dest, letter_upgrade)
@@ -386,6 +398,9 @@ class Chess
         board[0][7].piece, board[0][4].piece = nil, nil
         board[0][5].piece.position, board[0][6].piece.position = [0,5], [0,6]
         update_possible_movement_all_pieces()
+        turns[board[0][5].piece.COLOR.to_sym] += 1
+        board[0][5].piece.number_of_move += 1 if board[0][5].piece.instance_of?(Rook)
+        board[0][6].piece.number_of_move += 1 if board[0][6].piece.instance_of?(King)
         
         return board[0][5].piece
       else
@@ -393,24 +408,34 @@ class Chess
         board[7][7].piece, board[7][4].piece = nil, nil
         board[7][5].piece.position, board[7][6].piece.position = [7,5], [7,6]
         update_possible_movement_all_pieces()
+        turns[board[7][5].piece.COLOR.to_sym] += 1
+        board[7][5].piece.number_of_move += 1 if board[7][5].piece.instance_of?(Rook)
+        board[7][6].piece.number_of_move += 1 if board[7][6].piece.instance_of?(King)
         
         return board[7][5].piece
       end
     else
       if color == 'black'
         board[0][3].piece, board[0][2].piece = board[0][0].piece, board[0][4].piece
-        board[0][7].piece, board[0][4].piece = nil, nil
-        
+        board[0][0].piece, board[0][4].piece = nil, nil
         board[0][3].piece.position, board[0][2].piece.position = [0,3], [0,2]
         update_possible_movement_all_pieces()
+
+        turns[board[0][3].piece.COLOR.to_sym] += 1
+        board[0][3].piece.number_of_move += 1 if board[0][3].piece.instance_of?(Rook)
+        board[0][2].piece.number_of_move += 1 if board[0][2].piece.instance_of?(King)
 
         return board[0][3].piece
       else
         board[7][3].piece, board[7][2].piece = board[7][0].piece, board[7][4].piece
-        board[7][7].piece, board[7][4].piece = nil, nil
+        board[7][0].piece, board[7][4].piece = nil, nil
         board[7][3].piece.position, board[7][2].piece.position = [7,3], [7,2]
         update_possible_movement_all_pieces()
         
+        turns[board[7][3].piece.COLOR.to_sym] += 1
+        board[7][3].piece.number_of_move += 1 if board[7][3].piece.instance_of?(Rook)
+        board[7][2].piece.number_of_move += 1 if board[7][2].piece.instance_of?(King)
+
         return board[7][3].piece
       end
     end
@@ -440,6 +465,50 @@ class Chess
     update_possible_movement_all_pieces()
     
     result
+  end
+
+  def checkmate?(color)
+    king = find_by_name('K', color)[0].piece
+    piece_same_color = get_pieces_by_color(color)
+    pieces = get_pieces_by_color(color == 'white' ? 'black' : 'white')
+    return false if king.possible_movement.empty?
+    return false unless king.check?(pieces)
+    
+    pieces_mov = piece_same_color.any? do |piece|
+      piece.possible_movement.any? do |pos_mov|
+        dest = [piece.position[0] + pos_mov[0], piece.position[1] + pos_mov[1]]
+        !will_leave_king_in_check?(piece.position, dest)
+      end
+    end
+
+    king_mov = king.possible_movement.all? do |pos_mov|
+      dest = [king.position[0] + pos_mov[0], king.position[1] + pos_mov[1]]
+      will_leave_king_in_check?(king.position, dest)
+    end
+
+    !pieces_mov && king_mov
+  end
+
+  def stalemate?(color)
+    king = find_by_name('K', color)[0].piece
+    piece_same_color = get_pieces_by_color(color)
+    pieces = get_pieces_by_color(color == 'white' ? 'black' : 'white')
+    return false if king.possible_movement.empty?
+    return false if king.check?(pieces)
+
+    pieces_mov = piece_same_color.any? do |piece|
+      piece.possible_movement.any? do |pos_mov|
+        dest = [piece.position[0] + pos_mov[0], piece.position[1] + pos_mov[1]]
+        !will_leave_king_in_check?(piece.position, dest)
+      end
+    end
+
+
+    king_mov = king.possible_movement.all? do |pos_mov|
+      dest = [king.position[0] + pos_mov[0], king.position[1] + pos_mov[1]]
+      will_leave_king_in_check?(king.position, dest)
+    end
+    !pieces_mov && king_mov
   end
 
   def short_castling?(rook)
@@ -543,7 +612,6 @@ class Chess
       row.each do |square|
         next if square.piece.nil?
         square.piece.instance_of?(Pawn) ? square.piece.generate_possible_movement(board, turns) : square.piece.generate_possible_movement(board)
-
       end
     end
   end

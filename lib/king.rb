@@ -27,40 +27,19 @@ class King < Piece
     @possible_movement = pos_mov
   end
 
-  def checkmate?(pieces)
-    danger_in_position?(pieces) && danger_in_all_possible_movement?(pieces)
-  end
-
   def check?(pieces)
-    danger_in_position?(pieces) && !danger_in_all_possible_movement?(pieces)
-  end
 
-  def stalemate?(pieces)
-    !danger_in_position?(pieces) && danger_in_all_possible_movement?(pieces)
+    pieces.any? do |piece|
+      piece.possible_movement.any? do |pos|
+        pos[0] + piece.position[0] == self.position[0] && pos[1] + piece.position[1] == self.position[1]
+      end
+    end
   end
 
   def self.SYMBOLS
     @@SYMBOLS
   end
 
-  private
+  # private
 
-  def danger_in_position?(pieces)
-    pieces.any? do |piece|
-      piece.possible_movement.any? do |pos_mov|
-        piece.position[0] + pos_mov[0] == self.position[0] && piece.position[1] + pos_mov[1] == self.position[1]
-      end
-    end
-  end
-
-  def danger_in_all_possible_movement?(pieces)
-    return false if self.possible_movement.empty?
-    self.possible_movement.all? do |king_pos|
-      pieces.any? do |piece|
-        piece.possible_movement.any? do |piece_pos|
-          king_pos[0] + self.position[0] == piece_pos[0] + piece.position[0] && king_pos[1] + self.position[1] == piece_pos[1] + piece.position[1]
-        end
-      end
-    end
-  end
 end

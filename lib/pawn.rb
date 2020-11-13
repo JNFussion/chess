@@ -26,6 +26,8 @@ class Pawn < Piece
     pos_mov.delete([-2,0]) if self.position != self.INITIAL_POSITION
     # Delete move forward if there is a piece
     pos_mov.delete([-1, 0]) unless valid_mode?(self.position[0] - 1, self.position[1]) && board[self.position[0] - 1][self.position[1]].piece.nil?
+    #Delete 2 square initial movement if there is a piece
+    pos_mov.delete([-2, 0]) unless valid_mode?(self.position[0] - 2, self.position[1]) && board[self.position[0] - 2][self.position[1]].piece.nil?
     # Delete move diagonal if there aren't black pieces
     pos_mov.delete([-1,-1]) if valid_mode?(self.position[0] - 1, self.position[1] - 1) && (board[self.position[0] - 1][self.position[1] - 1].piece.nil? || board[self.position[0] - 1][self.position[1] - 1].piece.COLOR != 'black')
     pos_mov.delete([-1,1]) if valid_mode?(self.position[0] - 1, self.position[1] + 1) && (board[self.position[0] - 1][self.position[1] + 1].piece.nil? || board[self.position[0] - 1][self.position[1] + 1].piece.COLOR != 'black')
@@ -40,6 +42,8 @@ class Pawn < Piece
     pos_mov.delete([2,0]) if self.position != self.INITIAL_POSITION
     # Delete move forward if there is a piece
     pos_mov.delete([1, 0]) unless valid_mode?(self.position[0] + 1, self.position[1]) && board[self.position[0] + 1][self.position[1]].piece.nil?
+    #Delete 2 square initial movement if there is a piece
+    pos_mov.delete([2, 0]) unless valid_mode?(self.position[0] + 2, self.position[1]) && board[self.position[0] + 2][self.position[1]].piece.nil?
     # Delete move diagonal if there aren't black pieces
     pos_mov.delete([1,-1]) if valid_mode?(self.position[0] + 1, self.position[1] - 1) && (board[self.position[0] + 1][self.position[1] - 1].piece.nil? || board[self.position[0] + 1][self.position[1] - 1].piece.COLOR != 'white')
     pos_mov.delete([1,1]) if valid_mode?(self.position[0] + 1, self.position[1] + 1) && (board[self.position[0] + 1][self.position[1] + 1].piece.nil? || board[self.position[0] + 1][self.position[1] + 1].piece.COLOR != 'white')
@@ -50,7 +54,7 @@ class Pawn < Piece
     return if turns.nil?
     pos_mov = Array.new(self.MOVEMENT[-2..-1])
     #check left
-    if valid_mode?(self.position[0], self.position[1] - 1) && !board[self.position[0]][self.position[1] - 1].piece.nil?
+    if valid_mode?(self.position[0], self.position[1] - 1) && !board[self.position[0]][self.position[1] - 1].piece.nil? && board[self.position[0]][self.position[1] - 1].piece.COLOR != self.COLOR
       piece_left = board[self.position[0]][self.position[1] - 1].piece
       pos_mov.shift if self.COLOR == piece_left.COLOR || turns[:black] != turns[:white] || piece_left.COLOR == 'white' ? 
       piece_left.position[0] + 2 != piece_left.INITIAL_POSITION[0] || piece_left.position[1] != piece_left.INITIAL_POSITION[1] :
@@ -58,9 +62,8 @@ class Pawn < Piece
     else
       pos_mov.shift
     end
-
     # check right
-    if valid_mode?(self.position[0], self.position[1] + 1) && !board[self.position[0]][self.position[1] + 1].piece.nil?
+    if valid_mode?(self.position[0], self.position[1] + 1) && !board[self.position[0]][self.position[1] + 1].piece.nil? && board[self.position[0]][self.position[1] + 1].piece.COLOR != self.COLOR
       piece_right = board[self.position[0]][self.position[1] + 1].piece
       pos_mov.pop if self.COLOR == piece_right.COLOR || turns[:black] != turns[:white] || piece_right.COLOR == 'white' ? 
         piece_right.position[0] + 2 != piece_right.INITIAL_POSITION[0] || piece_right.position[1]== piece_right.INITIAL_POSITION[1] :

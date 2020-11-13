@@ -498,7 +498,7 @@ describe 'Piece' do
       it 'return false' do
         king = @chess.board[0][4].piece
         pieces = @chess.get_pieces_by_color('white')
-        expect(king.stalemate?(pieces)).to eql(false)
+        expect(@chess.stalemate?('black')).to eql(false)
       end
 
       it 'return true' do
@@ -514,7 +514,7 @@ describe 'Piece' do
         @empty_board.board[2][7].piece.position  = [2,7]
         @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(true)
+        expect(@empty_board.stalemate?('black')).to eql(true)
       end
 
       it 'return false' do
@@ -526,7 +526,7 @@ describe 'Piece' do
         @empty_board.board[2][7].piece.position  = [2,7]
         @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+        expect(@empty_board.stalemate?('black')).to eql(false)
       end
       it 'return false' do
         @empty_board.board[0][7].piece  = King.new('black', [0,4])
@@ -541,7 +541,7 @@ describe 'Piece' do
         @empty_board.board[2][7].piece.position  = [2,7]
         @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.stalemate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+        expect(@empty_board.stalemate?('black')).to eql(false)
       end
 
       it 'return false' do
@@ -551,7 +551,7 @@ describe 'Piece' do
         @empty_board.board[0][0].piece = Bishop.new('black', [0,2])
         @empty_board.board[0][0].piece.position = [0,0]
         @empty_board.board[0][0].piece.generate_possible_movement(@empty_board.board)
-        expect(@empty_board.board[3][3].piece.stalemate?(@empty_board.get_pieces_by_color('black'))).to eql(false)
+        expect(@empty_board.stalemate?('white')).to eql(false)
       end
         
     end
@@ -569,7 +569,7 @@ describe 'Piece' do
         @empty_board.board[0][4].piece.position  = [0,4]
         @empty_board.board[0][4].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(true)
+        expect(@empty_board.checkmate?('black')).to eql(true)
       end
 
       it 'return false' do
@@ -581,7 +581,7 @@ describe 'Piece' do
         @empty_board.board[0][4].piece.position  = [0,4]
         @empty_board.board[0][4].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+        expect(@empty_board.checkmate?('black')).to eql(false)
 
       end
 
@@ -598,7 +598,7 @@ describe 'Piece' do
         @empty_board.board[2][7].piece.position  = [2,7]
         @empty_board.board[2][7].piece.generate_possible_movement(@empty_board.board)
 
-        expect(@empty_board.board[0][7].piece.checkmate?(@empty_board.get_pieces_by_color('white'))).to eql(false)
+        expect(@empty_board.checkmate?('black')).to eql(false)
       end
     end
   end
